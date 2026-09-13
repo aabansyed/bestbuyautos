@@ -1,0 +1,129 @@
+.discover-section {
+  padding: 80px 0;
+}
+
+.discover-section-alt {
+  background: var(--dark2);
+}
+
+/* ── Body type cards ── */
+.discover-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.discover-card {
+  display: block;
+  text-decoration: none;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: var(--dark2);
+  transition: transform 0.25s, border-color 0.25s;
+}
+
+.discover-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold);
+}
+
+.discover-card-img {
+  position: relative;
+  height: 190px;
+  background-size: cover;
+  background-position: center;
+}
+
+.discover-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.1) 0%, rgba(10, 10, 10, 0.85) 100%);
+}
+
+.discover-count-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(10, 10, 10, 0.75);
+  border: 1px solid var(--glass-border);
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.discover-card-label {
+  padding: 16px 20px;
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+/* ── Popular model cards ── */
+.popular-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
+}
+
+.popular-card {
+  display: block;
+  text-decoration: none;
+  text-align: left;
+}
+
+.popular-card-img {
+  height: 110px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--glass-border);
+  margin-bottom: 10px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.popular-card:hover .popular-card-img {
+  border-color: var(--gold);
+  transform: translateY(-4px);
+}
+
+.popular-card-brand {
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.popular-card-name {
+  font-size: 0.85rem;
+  color: var(--white);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.popular-card-name span {
+  color: var(--gray);
+  font-weight: 400;
+}
+
+@media (max-width: 900px) {
+  .discover-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .popular-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .discover-grid {
+    grid-template-columns: 1fr;
+  }
+  .popular-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

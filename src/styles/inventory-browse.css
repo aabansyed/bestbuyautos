@@ -1,0 +1,176 @@
+.inv-browse-body {
+  padding: 50px 5% 100px;
+}
+
+.inv-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--dark2);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 8px 8px 8px 20px;
+  margin-bottom: 20px;
+}
+
+.inv-search-bar i.fa-search {
+  color: var(--gray);
+}
+
+.inv-search-bar input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-size: 0.95rem;
+  font-family: inherit;
+  padding: 10px 0;
+}
+
+.inv-clear-btn {
+  background: none;
+  border: none;
+  color: var(--gray);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+}
+
+.inv-clear-btn:hover {
+  color: var(--gold);
+}
+
+.inv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.inv-chip {
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: 1px solid var(--glass-border);
+  background: var(--dark2);
+  color: var(--gray-light, #ccc);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.inv-chip:hover {
+  border-color: var(--gold);
+}
+
+.inv-chip.active {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
+  color: #1a1206;
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.inv-result-count {
+  color: var(--gray);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.inv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.inv-card {
+  background: var(--dark2);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.inv-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold);
+}
+
+.inv-card-img {
+  position: relative;
+  height: 190px;
+  background-size: cover;
+  background-position: center;
+}
+
+.inv-card-body {
+  padding: 18px 20px 20px;
+}
+
+.inv-card-brand {
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.inv-card-name {
+  font-family: "Playfair Display", serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 2px 0 12px;
+}
+
+.inv-card-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.76rem;
+  color: var(--gray);
+  margin-bottom: 16px;
+}
+
+.inv-card-specs i {
+  color: var(--gold);
+  margin-right: 4px;
+}
+
+.inv-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 14px;
+}
+
+.inv-card-price {
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.inv-view-btn {
+  padding: 8px 20px !important;
+  font-size: 0.8rem !important;
+}
+
+@media (max-width: 900px) {
+  .inv-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .inv-grid {
+    grid-template-columns: 1fr;
+  }
+  .inv-search-bar {
+    flex-wrap: wrap;
+  }
+}
