@@ -65,7 +65,7 @@ export default function Overview() {
       {error && <div className="admin-auth-error"><i className="fas fa-circle-exclamation"></i> {error}</div>}
 
       <div className="admin-stat-grid">
-        <StatCard icon={STAT_ICONS.cars} label="Total Cars Listed" value={stats?.cars} sub="Across all body types" />
+        <StatCard featured icon={STAT_ICONS.cars} label="Total Cars Listed" value={stats?.cars} sub="Across all body types" />
         <StatCard icon={STAT_ICONS.body} label="Body Types" value={stats?.bodyTypes} sub="Distinct categories in stock" />
         <StatCard icon={STAT_ICONS.reviews} label="Reviews" value={stats?.reviews} sub="Customer submissions" />
         <StatCard icon={STAT_ICONS.queries} label="Queries" value={stats?.queries} sub="Contact form inquiries" />
@@ -127,15 +127,41 @@ export default function Overview() {
   );
 }
 
-function StatCard({ icon, label, value, sub }) {
+function StatCard({ icon, label, value, sub, featured = false }) {
+  const displayValue = useCountUp(value);
   return (
-    <div className="admin-stat-card">
+    <div className={"admin-stat-card" + (featured ? " is-featured" : "")}>
       <div className="admin-stat-card-top">
         <span className="admin-stat-label">{label}</span>
         <span className="admin-stat-icon"><i className={`fas ${icon}`}></i></span>
       </div>
-      <div className="admin-stat-value">{value === undefined || value === null ? "—" : value}</div>
+      <div className="admin-stat-value">{value === undefined || value === null ? "—" : displayValue}</div>
       <div className="admin-stat-sub">{sub}</div>
     </div>
   );
+}
+
+// Small, deliberate motion moment on dashboard load: counts up to the real
+// value once, instead of the number just appearing.
+function useCountUp(value, duration = 700) {
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (value === undefined || value === null) return;
+    let raf;
+    const start = performance.now();
+    const from = 0;
+    const to = Number(value) || 0;
+
+    const tick = (now) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+      setDisplay(Math.round(from + (to - from) * eased));
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+
+  return display;
 }

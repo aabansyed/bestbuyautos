@@ -3,6 +3,7 @@ import { initHomePage } from "./scripts/homeScript";
 import "../styles/home.css";
 import HomeDiscoverySections from "../components/HomeDiscoverySections";
 import HomeFaqSection from "../components/HomeFaqSection";
+import FeaturedCarsSection from "../components/FeaturedCarsSection";
 import HomeBannerSlider from "../components/HomeBannerSlider";
 export default function Home() {
   useEffect(() => {
@@ -43,70 +44,7 @@ export default function Home() {
 </div>
 
 
-<section id="inventory">
-  <div className="container">
-    <div className="section-header" data-aos="fade-up">
-      <div className="section-tag">Our Inventory</div>
-      <h2 className="section-title">Find Your <span className="gold">Perfect Car</span></h2>
-      <div className="gold-line"></div>
-      <p className="section-desc" style={{marginTop: '16px'}}>Browse thousands of premium vehicles available for worldwide export</p>
-    </div>
-
-    
-    <div className="filters-wrap" data-aos="fade-up" data-aos-delay="100">
-      <div className="filters-grid">
-        <select className="filter-select" id="fBrand">
-          <option value="">All Brands</option>
-          <option>Toyota</option><option>Nissan</option><option>Honda</option>
-          <option>Lexus</option><option>Mitsubishi</option><option>Mazda</option>
-          <option>Subaru</option><option>BMW</option><option>Mercedes</option>
-          <option>Audi</option><option>Land Rover</option><option>Porsche</option>
-        </select>
-        <select className="filter-select" id="fYear">
-          <option value="">Any Year</option>
-          <option>2024</option><option>2023</option><option>2022</option>
-          <option>2021</option><option>2020</option><option>2019</option>
-          <option>2018</option><option>2015–2017</option><option>2010–2014</option>
-        </select>
-        <select className="filter-select" id="fPrice">
-          <option value="">Any Price</option>
-          <option value="0-5000">Under $5,000</option>
-          <option value="5000-15000">$5,000 – $15,000</option>
-          <option value="15000-30000">$15,000 – $30,000</option>
-          <option value="30000-60000">$30,000 – $60,000</option>
-          <option value="60000+">$60,000+</option>
-        </select>
-        <select className="filter-select" id="fFuel">
-          <option value="">Any Fuel</option>
-          <option>Petrol</option><option>Diesel</option>
-          <option>Hybrid</option><option>Electric</option>
-        </select>
-        <select className="filter-select" id="fTrans">
-          <option value="">Any Transmission</option>
-          <option>Automatic</option><option>Manual</option><option>CVT</option>
-        </select>
-        <select className="filter-select" id="fBody">
-          <option value="">Any Body</option>
-          <option>Sedan</option><option>SUV</option><option>Coupe</option>
-          <option>Hatchback</option><option>Van</option><option>Truck</option>
-        </select>
-        <input className="filter-input" type="number" placeholder="Max Mileage (km)" id="fMileage" />
-        <button className="btn-filter" onClick={() => { applyFilters() }}>
-          <i className="fas fa-search"></i> Search Cars
-        </button>
-      </div>
-    </div>
-
-    
-    <div className="cars-grid" id="carsGrid"></div>
-
-    <div className="load-more-wrap" data-aos="fade-up">
-      <button className="btn-hero-primary" id="loadMoreBtn" onClick={() => { loadMore() }}>
-        <i className="fas fa-plus"></i> Load More Cars
-      </button>
-    </div>
-  </div>
-</section>
+<FeaturedCarsSection />
 <HomeDiscoverySections />
 
 <section id="why">

@@ -692,7 +692,7 @@ export default function Reviews() {
   <h2>Ready to Join Our <span style={{background: 'linear-gradient(135deg,var(--gold-dark),var(--gold-light))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>Happy Customers?</span></h2>
   <p>Browse our premium inventory and import your dream vehicle from Japan today</p>
   <div className="glass-banner-btns">
-    <a href="index.html#inventory" className="btn-primary"><i className="fas fa-car"></i> Browse Inventory</a>
+<Link to="/stock-cars" className="btn-primary"><i className="fas fa-car"></i> Browse Inventory</Link>
     <a href="contact-us.html" className="btn-secondary"><i className="fas fa-envelope"></i> Contact Our Team</a>
   </div>
 </div>

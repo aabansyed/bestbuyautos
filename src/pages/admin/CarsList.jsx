@@ -65,13 +65,25 @@ export default function CarsList() {
     }
   };
 
+  const handleToggleFeatured = async (car) => {
+    setBusyId(car.id);
+    try {
+      const updated = await updateCar(car.id, { featured: !car.featured });
+      setCars((prev) => prev.map((c) => (c.id === car.id ? updated : c)));
+    } catch (err) {
+      alert(err.message || "Failed to update car.");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   return (
     <div className="admin-page">
       <div className="admin-page-header">
         <div>
           <h1>Cars</h1>
           <p className="admin-page-sub">
-            {cars ? `${cars.length} total · ${cars.filter((c) => c.in_stock).length} visible on site` : "Loading…"}
+            {cars ? `${cars.length} total - ${cars.filter((c) => c.in_stock).length} visible on site - ${cars.filter((c) => c.featured).length} featured on Home` : "Loading..."}
           </p>
         </div>
         <Link to="/admin/cars/new" className="admin-btn-primary">
@@ -84,7 +96,7 @@ export default function CarsList() {
           <i className="fas fa-search"></i>
           <input
             type="text"
-            placeholder="Search brand or model…"
+            placeholder="Search brand or model..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -100,7 +112,7 @@ export default function CarsList() {
       {error && <div className="admin-auth-error"><i className="fas fa-circle-exclamation"></i> {error}</div>}
 
       {!cars && !error && (
-        <div className="admin-empty"><i className="fas fa-circle-notch fa-spin"></i> Loading cars…</div>
+        <div className="admin-empty"><i className="fas fa-circle-notch fa-spin"></i> Loading cars...</div>
       )}
 
       {cars && filtered.length === 0 && (
@@ -122,6 +134,7 @@ export default function CarsList() {
                 <th>Price</th>
                 <th>Mileage</th>
                 <th>Status</th>
+                <th>Featured</th>
                 <th></th>
               </tr>
             </thead>
@@ -151,6 +164,16 @@ export default function CarsList() {
                       title="Toggle visibility on the public site"
                     >
                       <span className="dot"></span> {car.in_stock ? "Live" : "Hidden"}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className={`admin-status-toggle ${car.featured ? "on" : "off"}`}
+                      onClick={() => handleToggleFeatured(car)}
+                      disabled={busyId === car.id}
+                      title="Toggle featured on Home page"
+                    >
+                      <span className="dot"></span> {car.featured ? "Featured" : "Not featured"}
                     </button>
                   </td>
                   <td>

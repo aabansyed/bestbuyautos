@@ -1,19 +1,41 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../lib/AuthContext";
+
 const NAV_ITEMS = [
   { to: "/admin", end: true, icon: "fa-gauge", label: "Overview" },
   { to: "/admin/cars", icon: "fa-car", label: "Cars" },
   { to: "/admin/cars/new", icon: "fa-circle-plus", label: "Add Car" },
+  { to: "/admin/auction-cars", icon: "fa-gavel", label: "Auction Cars" },
+  { to: "/admin/auction-cars/new", icon: "fa-circle-plus", label: "Add Auction Listing" },
   { to: "/admin/company", icon: "fa-file-lines", label: "Company Info" },
   { to: "/admin/faqs", icon: "fa-circle-question", label: "FAQs" },
   { to: "/admin/banner", icon: "fa-images", label: "Hero Banner" },
   { to: "/admin/partners", icon: "fa-handshake", label: "Our Partners" },
   { to: "/admin/blog", icon: "fa-newspaper", label: "Blog Posts" },
+  { to: "/admin/how-to-buy", icon: "fa-route", label: "How to Buy" },
+  { to: "/admin/privacy-policy", icon: "fa-file-shield", label: "Privacy Policy" },
+  { to: "/admin/queries", icon: "fa-envelope", label: "Queries" },
+  { to: "/admin/our-company", icon: "fa-building", label: "Our Company" },
+  { to: "/admin/banking", icon: "fa-building-columns", label: "Bank Details" },
 ];
 
 export default function AdminLayout() {
   const { session, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close the drawer whenever the route changes (link click, back button, etc.)
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  // Lock body scroll while the mobile drawer is open
+  useEffect(() => {
+    document.body.style.overflow = sidebarOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [sidebarOpen]);
 
   const handleLogout = async () => {
     await signOut();
@@ -21,16 +43,37 @@ export default function AdminLayout() {
   };
 
   const initials = session?.user?.email?.[0]?.toUpperCase() || "A";
+  const activeItem = NAV_ITEMS.find((item) =>
+    item.end ? location.pathname === item.to : location.pathname.startsWith(item.to)
+  );
 
   return (
     <div className="admin-shell">
-      <aside className="admin-sidebar">
+      <header className="admin-topbar">
+        <button className="admin-hamburger" onClick={() => setSidebarOpen(true)} aria-label="Open admin menu">
+          <i className="fas fa-bars"></i>
+        </button>
+        <div className="admin-topbar-title">
+          <img src="/bba-logo.png" alt="BBA Japan" className="admin-topbar-logo" />
+          <span>{activeItem?.label || "Admin Panel"}</span>
+        </div>
+        <div className="admin-user-avatar admin-topbar-avatar">{initials}</div>
+      </header>
+
+      {sidebarOpen && (
+        <div className="admin-sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>
+      )}
+
+      <aside className={`admin-sidebar${sidebarOpen ? " is-open" : ""}`}>
         <div className="admin-sidebar-logo">
           <img src="/bba-logo.png" alt="BBA Japan" className="admin-sidebar-logo-img" />
           <div className="admin-sidebar-logo-text">
             <div className="admin-sidebar-logo-title">BBA Japan</div>
             <div className="admin-sidebar-logo-sub">Admin Panel</div>
           </div>
+          <button className="admin-sidebar-close" onClick={() => setSidebarOpen(false)} aria-label="Close admin menu">
+            <i className="fas fa-xmark"></i>
+          </button>
         </div>
 
         <div className="admin-sidebar-nav">

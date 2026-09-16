@@ -144,7 +144,7 @@ export default function InventoryBrowse() {
                   </div>
                   <div className="inv-card-footer">
                     <div className="inv-card-price">${Number(car.price).toLocaleString()}</div>
-                    <Link to={`/?carId=${car.id}#inventory`} className="btn-hero-primary inv-view-btn">
+                    <Link to={`/stock-cars?carId=${car.id}`} className="btn-hero-primary inv-view-btn">
                       View
                     </Link>
                   </div>

@@ -69,7 +69,7 @@ export default function HomeDiscoverySections() {
           {bodyTypes && bodyTypes.length > 0 && (
             <div className="discover-grid" data-aos="fade-up" data-aos-delay="100">
               {bodyTypes.map((b) => (
-                <Link to={`/inventory?body=${encodeURIComponent(b.body)}`} className="discover-card" key={b.body}>
+                <Link to={`/stock-cars?body=${encodeURIComponent(b.body)}`} className="discover-card" key={b.body}>
                   <div className="discover-card-img" style={{ backgroundImage: `url(${b.image})` }}>
                     <div className="discover-card-overlay"></div>
                     <span className="discover-count-badge">{b.count} {b.count === 1 ? "car" : "cars"}</span>

@@ -1,22 +1,24 @@
 import { supabase } from "./supabase";
 
-export async function fetchPublicFaqs() {
+/** page: 'home' (default, flat list) or 'auction' (grouped by category). */
+export async function fetchPublicFaqs(page = "home") {
   const { data, error } = await supabase
     .from("faqs")
     .select("*")
+    .eq("page", page)
     .order("display_order", { ascending: true });
   if (error) throw error;
   return data;
 }
 
-export async function fetchAllFaqs() {
-  return fetchPublicFaqs();
+export async function fetchAllFaqs(page = "home") {
+  return fetchPublicFaqs(page);
 }
 
-export async function createFaq(afterOrder) {
+export async function createFaq(afterOrder, page = "home", category = null) {
   const { data, error } = await supabase
     .from("faqs")
-    .insert([{ question: "New question", answer: "New answer", display_order: afterOrder }])
+    .insert([{ question: "New question", answer: "New answer", display_order: afterOrder, page, category }])
     .select()
     .single();
   if (error) throw error;

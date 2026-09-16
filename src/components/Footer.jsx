@@ -27,7 +27,7 @@ export default function Footer() {
           <div>
             <div className="footer-col-title">Quick Links</div>
             <ul className="footer-links">
-              <li><a href="/#inventory">Browse Cars</a></li>
+         <li><Link to="/stock-cars">Browse Cars</Link></li>
               <li><a href="/#shipping">Container Shipping</a></li>
               <li><a href="/#payment">Payment Methods</a></li>
               <li><Link to="/contact-us">Contact Us</Link></li>
@@ -37,11 +37,11 @@ export default function Footer() {
           <div>
             <div className="footer-col-title">Car Types</div>
             <ul className="footer-links">
-              <li><a href="/#inventory">Luxury Cars</a></li>
-              <li><a href="/#inventory">SUVs & 4x4</a></li>
-              <li><a href="/#inventory">JDM Sports</a></li>
-              <li><a href="/#inventory">Hybrid / EV</a></li>
-              <li><a href="/#inventory">Vans & Buses</a></li>
+              <li><Link to="/stock-cars">Luxury Cars</Link></li>
+<li><Link to="/stock-cars?body=SUV">SUVs & 4x4</Link></li>
+<li><Link to="/stock-cars?body=Coupe">JDM Sports</Link></li>
+<li><Link to="/stock-cars?fuel=Hybrid">Hybrid / EV</Link></li>
+<li><Link to="/stock-cars?body=Van">Vans & Buses</Link></li>
             </ul>
           </div>
           <div>

@@ -10,6 +10,17 @@ export async function fetchPublicCars() {
   if (error) throw error;
   return data;
 }
+/** Homepage's "Featured Cars" section — only in-stock AND admin-featured. */
+export async function fetchFeaturedCars() {
+  const { data, error } = await supabase
+    .from("cars")
+    .select("*")
+    .eq("in_stock", true)
+    .eq("featured", true)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data;
+}
 
 /** Admin panel: every car, including hidden/out-of-stock ones. */
 export async function fetchAllCars() {

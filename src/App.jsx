@@ -4,13 +4,20 @@ import Home from "./pages/Home";
 import Auction from "./pages/Auction";
 import Blog from "./pages/Blog";
 import BlogList from "./pages/admin/BlogList";
+import QueriesManager from "./pages/admin/QueriesManager";
 import BlogForm from "./pages/admin/BlogForm";
 import BlogDetail from "./pages/BlogDetail";
+import BankDetails from "./pages/BankDetails";
+import BankingDetails from "./pages/admin/BankingDetails";
 import BannerManager from "./pages/admin/BannerManager";
+import StockCars from "./pages/StockCars";
 import PartnersManager from "./pages/admin/PartnersManager";
 import CeoMessage from "./pages/CeoMessage";
+import OurCompanyManager from "./pages/admin/OurCompanyManager";
+import HowToBuyManager from "./pages/admin/HowToBuyManager";
 import ContactUs from "./pages/ContactUs";
 import HowToBuy from "./pages/HowToBuy";
+import PolicyManager from "./pages/admin/PolicyManager";
 import OurCompany from "./pages/OurCompany";
 import InventoryBrowse from "./pages/InventoryBrowse";
 import OurPartners from "./pages/OurPartners";
@@ -24,6 +31,8 @@ import ProtectedRoute from "./pages/admin/ProtectedRoute";
 import CarsList from "./pages/admin/CarsList";
 import CarForm from "./pages/admin/CarForm";
 import Overview from "./pages/admin/Overview";
+import AuctionCarsList from "./pages/admin/AuctionCarsList";
+import AuctionCarForm from "./pages/admin/AuctionCarForm";
 import "./styles/global.css";
 import "./styles/admin.css";
 import CompanyContent from "./pages/admin/CompanyContent";
@@ -42,6 +51,7 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="stock-cars" element={<StockCars />} />
             <Route path="auction" element={<Auction />} />
             <Route path="blog" element={<Blog />} />
             <Route path="blog/:slug" element={<BlogDetail />} />
@@ -49,6 +59,7 @@ export default function App() {
             <Route path="contact-us" element={<ContactUs />} />
             <Route path="how-to-buy" element={<HowToBuy />} />
             <Route path="our-company" element={<OurCompany />} />
+            <Route path="bank-details" element={<BankDetails />} />
             <Route path="our-partners" element={<OurPartners />} />
             <Route path="privacy-policy" element={<PrivacyPolicy />} />
             <Route path="reviews" element={<Reviews />} />
@@ -75,7 +86,15 @@ export default function App() {
  <Route path="partners" element={<PartnersManager />} />
  <Route path="blog" element={<BlogList />} />
 <Route path="blog/new" element={<BlogForm />} />
+<Route path="how-to-buy" element={<HowToBuyManager />} />
 <Route path="blog/:id" element={<BlogForm />} />
+          <Route path="auction-cars" element={<AuctionCarsList />} />
+<Route path="auction-cars/new" element={<AuctionCarForm />} />
+<Route path="auction-cars/:id" element={<AuctionCarForm />} />
+<Route path="privacy-policy" element={<PolicyManager />} />
+<Route path="queries" element={<QueriesManager />} />
+<Route path="our-company" element={<OurCompanyManager />} />
+<Route path="banking" element={<BankingDetails />} />
           </Route>
         </Routes>
       </AuthProvider>

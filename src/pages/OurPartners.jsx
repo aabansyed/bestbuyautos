@@ -158,7 +158,7 @@ export default function OurPartners() {
     <h2 data-aos="fade-up">Ready to Import with <span className="gold">Confidence?</span></h2>
     <p data-aos="fade-up" data-aos-delay="80">Our partner network is the backbone of every successful delivery. Browse our cars and experience the BBA difference.</p>
     <div className="cta-btns" data-aos="fade-up" data-aos-delay="160">
-      <a className="btn-primary" href="/#inventory"><i className="fas fa-car"></i> Browse Inventory</a>
+     <Link className="btn-primary" to="/stock-cars"><i className="fas fa-car"></i> Browse Inventory</Link>
       <Link to="/our-company" className="btn-outline-gold"><i className="fas fa-building"></i> About Our Company</Link>
     </div>
   </div>

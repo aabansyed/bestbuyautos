@@ -34,6 +34,43 @@ const FIELD_GROUPS = [
       { key: "mission_rating", label: "Average rating", type: "text" },
     ],
   },
+  {
+    title: "Auction Page — Live Highlight",
+    desc: "Top stats banner on the /auction page.",
+    fields: [
+      { key: "auction_stat_vehicles", label: "Vehicles updated weekly", type: "text" },
+      { key: "auction_stat_houses", label: "Auction houses", type: "text" },
+      { key: "auction_hero_intro", label: "Intro paragraph (below \"BBA Japan Live Auctions\")", type: "textarea" },
+    ],
+  },
+  {
+    title: "Auction Page — Feature 1",
+    desc: "\"Buying from Japanese Car Auctions Made Simple\" card.",
+    fields: [
+      { key: "auction_feature1_title", label: "Title", type: "text" },
+      { key: "auction_feature1_text", label: "Body text", type: "textarea" },
+    ],
+  },
+  {
+    title: "Auction Page — Feature 2",
+    desc: "\"Access to Over 150 Japanese Auction Houses\" card.",
+    fields: [
+      { key: "auction_feature2_title", label: "Title", type: "text" },
+      { key: "auction_feature2_intro", label: "Intro line", type: "text" },
+      { key: "auction_feature2_list", label: "Bullet points (one per line)", type: "textarea" },
+      { key: "auction_feature2_outro", label: "Closing line", type: "text" },
+    ],
+  },
+  {
+    title: "Auction Page — Feature 3",
+    desc: "\"Free Consultation & Auction Sheet Translation\" card.",
+    fields: [
+      { key: "auction_feature3_title", label: "Title", type: "text" },
+      { key: "auction_feature3_intro", label: "Intro line", type: "text" },
+      { key: "auction_feature3_list", label: "Bullet points (one per line)", type: "textarea" },
+      { key: "auction_feature3_outro", label: "Closing line", type: "text" },
+    ],
+  },
 ];
 
 export default function CompanyContent() {

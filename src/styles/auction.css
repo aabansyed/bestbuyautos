@@ -289,3 +289,7 @@ body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--white);ov
   .newsletter-form{flex-direction:column;}
   .newsletter-btn{width:100%;}
 }
+/* ── LIVE AUCTION CTA (replaces old sample-listings grid) ── */
+.auc-live-cta{margin:60px 0;text-align:center;background:var(--dark2);border:1px solid var(--glass-border);border-radius:22px;padding:56px 30px;}
+.auc-live-btn{display:inline-flex;align-items:center;gap:10px;padding:16px 40px;background:linear-gradient(135deg,var(--gold-dark),var(--gold-light));color:var(--black);font-weight:700;border-radius:50px;text-decoration:none;font-size:1rem;transition:transform .3s,box-shadow .3s;box-shadow:0 8px 24px rgba(201,168,76,.25);}
+.auc-live-btn:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(201,168,76,.4);}

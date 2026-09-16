@@ -13,7 +13,7 @@ import {
 } from "../../lib/carsApi";
 
 const emptyCar = {
-  brand: "",
+  maker: "",
   name: "",
   year: new Date().getFullYear(),
   price: "",
@@ -28,6 +28,7 @@ const emptyCar = {
   description: "",
   images: [],
   in_stock: true,
+  featured: false,
 };
 
 export default function CarForm() {
@@ -145,6 +146,7 @@ export default function CarForm() {
       description: car.description.trim(),
       images: car.images,
       in_stock: car.in_stock,
+      featured: car.featured,
     };
 
     setSaving(true);
@@ -319,7 +321,10 @@ export default function CarForm() {
           <input type="checkbox" checked={car.in_stock} onChange={set("in_stock")} />
           Visible on the public site (in stock)
         </label>
-
+<label className="admin-checkbox-row">
+  <input type="checkbox" checked={car.featured} onChange={set("featured")} />
+  Featured on Homepage
+</label>
         <div className="admin-form-actions">
           <button type="submit" className="admin-btn-primary" disabled={saving || uploading}>
             <i className="fas fa-save"></i> {saving ? "Saving…" : isEdit ? "Save Changes" : "Add Car"}
