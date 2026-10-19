@@ -309,7 +309,6 @@ export default function OurCompany() {
             <h2>{content.oc_cta_title} <GoldSpan>{content.oc_cta_title_gold}</GoldSpan></h2>
             <p>{content.oc_cta_desc}</p>
             <div className="glass-banner-btns">
-              <Link to="/stock-cars" className="btn-primary"><i className="fas fa-car"></i>Browse Inventory</Link>
               <a href="/#contact" className="btn-outline"><i className="fas fa-envelope"></i> Contact Our Team</a>
             </div>
           </div>

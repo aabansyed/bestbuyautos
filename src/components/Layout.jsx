@@ -3,9 +3,13 @@ import { Outlet, useLocation } from "react-router-dom";
 import AOS from "aos";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import CurrencySwitcher from "../components/CurrencySwitcher";
 import { initGlobalScript } from "../utils/globalScript";
 
+import { useSiteSettings } from "../lib/siteSettings";
+
 export default function Layout() {
+  const { site } = useSiteSettings();
   const [loaderHidden, setLoaderHidden] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [authTab, setAuthTab] = useState("login");
@@ -92,14 +96,12 @@ export default function Layout() {
       <div className="topbar">
         <div className="topbar-left">
           <div className="social-icons">
-            <a href="https://www.facebook.com/NO1BESTBUYAUTO/"><i className="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/no1bestbuyauto"><i className="fab fa-instagram"></i></a>
+           {site.facebook && <a href={site.facebook} target="_blank" rel="noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>}
+{site.instagram && <a href={site.instagram} target="_blank" rel="noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>}
           </div>
           <div className="tb-divider"></div>
           <div className="topbar-dropdowns">
-            <div className="tb-dropdown">
-              <i className="fas fa-dollar-sign"></i> USD <i className="fas fa-chevron-down"></i>
-            </div>
+         <CurrencySwitcher />
           </div>
         </div>
         <div className="topbar-right">

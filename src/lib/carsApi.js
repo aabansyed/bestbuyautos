@@ -63,3 +63,9 @@ export const BODY_TYPES = ["Sedan", "SUV", "Coupe", "Van", "Hatchback", "Truck",
 export const FUEL_TYPES = ["Petrol", "Diesel", "Hybrid", "Electric"];
 export const TRANS_TYPES = ["Automatic", "Manual", "CVT"];
 export const BADGE_TYPES = ["", "New", "Hot", "Premium"];
+/** Distinct brands already in use, for the admin's brand picker. */
+export async function fetchDistinctBrands() {
+  const { data, error } = await supabase.from("cars").select("brand");
+  if (error) throw error;
+  return [...new Set((data || []).map((row) => row.brand).filter(Boolean))].sort();
+}

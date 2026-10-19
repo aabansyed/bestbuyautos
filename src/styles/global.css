@@ -1618,3 +1618,40 @@ html, body {
 @media (max-width: 900px) {
   #aboutDropdown .mega-dropdown { display: none !important; }
 }
+/* ── Container Shipping: 8 steps in a 2-column grid (reads left→right, row by row) ── */
+.process-steps-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:20px;
+  max-width:1000px;margin:0 auto;
+}
+.step-card{
+  display:flex;gap:18px;align-items:flex-start;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:16px;padding:22px 24px;
+  transition:border-color .3s,transform .3s;
+}
+.step-card:hover{border-color:rgba(201,168,76,.35);transform:translateY(-3px);}
+.step-card .step-content h4{font-size:.98rem;font-weight:700;margin-bottom:6px;}
+.step-card .step-content p{font-size:.84rem;color:var(--gray);line-height:1.65;}
+@media (max-width:760px){.process-steps-grid{grid-template-columns:1fr;}}
+@media (prefers-reduced-motion:reduce){.step-card{transition:none;}.step-card:hover{transform:none;}}
+/* ── STOCK CARS: SBT-style card ── */
+.car-card .car-img-wrap{height:220px;cursor:pointer;}
+.sbt-tags{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.sbt-tag{font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.5px;text-transform:uppercase;}
+.sbt-tag-stock{border:1px solid var(--gold);color:var(--gold);background:rgba(201,168,76,0.08);}
+.sbt-tag-new{background:#1a8a4a;color:#fff;}
+.sbt-tag-hot{background:#c0392b;color:#fff;}
+.sbt-title{font-size:.95rem;font-weight:700;margin-bottom:12px;cursor:pointer;line-height:1.35;}
+.sbt-spec-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px 10px;
+  border:1px solid rgba(255,255,255,0.08);border-radius:10px;
+  padding:14px;margin-bottom:12px;background:rgba(255,255,255,0.02);
+}
+.sbt-spec{display:flex;gap:9px;align-items:flex-start;min-width:0;}
+.sbt-spec i{color:var(--gold);font-size:.85rem;margin-top:3px;width:16px;text-align:center;}
+.sbt-spec-val{font-size:.82rem;font-weight:700;word-break:break-word;}
+.sbt-spec-label{font-size:.68rem;color:var(--gray);}
+.sbt-meta{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:.76rem;margin-bottom:14px;}
+.sbt-meta span{color:var(--gray);}
+.sbt-footer{align-items:flex-end;}
+.sbt-price-label{font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}

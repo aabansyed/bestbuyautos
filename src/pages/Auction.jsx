@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { initAuctionPage } from "./scripts/auctionScript";
 import { fetchSiteContent, CONTENT_DEFAULTS } from "../lib/siteContentApi";
 import { fetchPublicFaqs } from "../lib/faqApi";
+import { fetchMediaMap } from "../lib/mediaApi";
 import "../styles/auction.css";
 
 export default function Auction() {
   const [content, setContent] = useState(CONTENT_DEFAULTS);
   const [faqs, setFaqs] = useState(null);
+  const [media, setMedia] = useState({});
 
   useEffect(() => {
     const cleanup = initAuctionPage();
@@ -17,6 +19,7 @@ export default function Auction() {
   useEffect(() => {
     fetchSiteContent().then(setContent).catch(() => {});
     fetchPublicFaqs("auction").then(setFaqs).catch(() => setFaqs([]));
+    fetchMediaMap().then(setMedia).catch(() => {});
   }, []);
 
   // Group auction FAQs by category, preserving first-appearance order.
@@ -31,6 +34,9 @@ export default function Auction() {
     });
     return order.map((cat) => ({ category: cat, items: map[cat] }));
   }, [faqs]);
+
+  const locationMap = media.auction_location_map;
+  const sheetGuide = media.auction_sheet_guide;
 
   return (
     <>
@@ -72,8 +78,16 @@ export default function Auction() {
         <p className="auction-live-text">Unlock instant access to <strong>{content.auction_stat_vehicles}</strong> Japanese vehicles every week from <strong>{content.auction_stat_houses}</strong> top auction houses across Japan.</p>
         <p className="auction-live-text">Whether you're searching for reliability, style, or rarity, BBA Japan brings Japan's finest vehicles straight to you.</p>
         <div className="auction-live-actions">
-          <a href="#" className="btn-auction"><i className="fas fa-map-location-dot"></i> Auction Location Map</a>
-          <a href="#" className="btn-auction"><i className="fas fa-file-alt"></i> Auction Sheet Guide</a>
+          {locationMap && (
+            <a href={locationMap.url} target="_blank" rel="noreferrer" className="btn-auction">
+              <i className="fas fa-map-location-dot"></i> Auction Location Map
+            </a>
+          )}
+          {sheetGuide && (
+            <a href={sheetGuide.url} target="_blank" rel="noreferrer" className="btn-auction">
+              <i className="fas fa-file-alt"></i> Auction Sheet Guide
+            </a>
+          )}
         </div>
       </div>
       <div className="auction-live-map">

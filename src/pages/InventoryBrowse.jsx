@@ -1,3 +1,4 @@
+import Price from "../components/Price";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { fetchPublicCars } from "../lib/carsApi";
@@ -143,7 +144,7 @@ export default function InventoryBrowse() {
                     <span><i className="fas fa-gas-pump"></i> {car.fuel}</span>
                   </div>
                   <div className="inv-card-footer">
-                    <div className="inv-card-price">${Number(car.price).toLocaleString()}</div>
+                    <div className="inv-card-price"><Price usd={car.price} /></div>
                     <Link to={`/stock-cars?carId=${car.id}`} className="btn-hero-primary inv-view-btn">
                       View
                     </Link>

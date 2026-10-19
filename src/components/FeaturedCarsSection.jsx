@@ -1,3 +1,4 @@
+import Price from "./Price";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchFeaturedCars } from "../lib/carsApi";
@@ -59,7 +60,7 @@ export default function FeaturedCarsSection() {
                     <div className="spec-pill"><i className="fas fa-cogs"></i> {car.trans}</div>
                   </div>
                   <div className="car-footer">
-                    <div className="car-price">${Number(car.price).toLocaleString()}</div>
+                    <div className="car-price"><Price usd={car.price} /></div>
                     <div className="car-actions">
                       <Link to={`/stock-cars?carId=${car.id}`} className="btn-card btn-card-primary">View</Link>
                     </div>

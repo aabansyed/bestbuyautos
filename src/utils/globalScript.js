@@ -92,6 +92,12 @@ export function initGlobalScript() {
   };
 
   // ── SHIPPING CALCULATOR ──────────────────────────────────────────
+  // Currency badalne par shipping result dobara calculate ho
+  window.addEventListener("currencychange", () => {
+    const res = document.getElementById("calcResult");
+    if (res && res.classList.contains("show")) window.calcShipping();
+  });
+
   window.calcShipping = function () {
     const sel = document.getElementById("calcCountry");
     if (!sel) return;
@@ -107,7 +113,10 @@ export function initGlobalScript() {
     const total = Math.round(baseCost * vMult * cMult);
     const costEl = document.getElementById("calcCostVal");
     const daysEl = document.getElementById("calcDaysVal");
-    if (costEl) costEl.textContent = `$${total.toLocaleString()} – $${(total + 350).toLocaleString()} USD`;
+    if (costEl) {
+      const fmt = window.formatPrice || ((n) => `$${n.toLocaleString()}`);
+      costEl.textContent = `${fmt(total)} – ${fmt(total + 350)}`;
+    }
     if (daysEl) daysEl.textContent = `${days} days`;
     const res = document.getElementById("calcResult");
     if (res) res.classList.add("show");

@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { initContactPage } from "./scripts/contactScript";
 import "../styles/contact-us.css";
+import { useSiteSettings } from "../lib/siteSettings";
 
 export default function ContactUs() {
+   const { site } = useSiteSettings();
   useEffect(() => {
     const cleanup = initContactPage();
     return cleanup;

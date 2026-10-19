@@ -5,6 +5,9 @@ import HomeDiscoverySections from "../components/HomeDiscoverySections";
 import HomeFaqSection from "../components/HomeFaqSection";
 import FeaturedCarsSection from "../components/FeaturedCarsSection";
 import HomeBannerSlider from "../components/HomeBannerSlider";
+import HeroSearch from "../components/HeroSearch";
+import HomeGallerySection from "../components/HomeGallerySection";
+import { useSiteSettings } from "../lib/siteSettings";
 export default function Home() {
   useEffect(() => {
     const cleanup = initHomePage();
@@ -14,7 +17,7 @@ export default function Home() {
   return (
     <>
 <HomeBannerSlider />
-
+<HeroSearch />
 <div className="marquee-section">
   <div className="marquee-track" id="marqueeTrack">
     <div className="marquee-item"><i className="fas fa-car"></i> Toyota</div>
@@ -47,47 +50,6 @@ export default function Home() {
 <FeaturedCarsSection />
 <HomeDiscoverySections />
 
-<section id="why">
-  <div className="container">
-    <div className="section-header" data-aos="fade-up">
-      <div className="section-tag">Why BestBuy Auto</div>
-      <h2 className="section-title">The <span className="gold">Gold Standard</span> in Export</h2>
-      <div className="gold-line"></div>
-    </div>
-    <div className="why-grid">
-      <div className="why-card" data-aos="fade-up" data-aos-delay="0">
-        <div className="why-icon"><i className="fas fa-shield-alt"></i></div>
-        <div className="why-title">100% Verified Stock</div>
-        <div className="why-desc">All vehicles are physically inspected and verified before listing. No surprises on delivery.</div>
-      </div>
-      <div className="why-card" data-aos="fade-up" data-aos-delay="80">
-        <div className="why-icon"><i className="fas fa-globe"></i></div>
-        <div className="why-title">Global Export Network</div>
-        <div className="why-desc">Shipping to 120+ countries. Experienced freight partners ensure safe and timely delivery.</div>
-      </div>
-      <div className="why-card" data-aos="fade-up" data-aos-delay="160">
-        <div className="why-icon"><i className="fas fa-hand-shake"></i></div>
-        <div className="why-title">Price Negotiation</div>
-        <div className="why-desc">We believe in fair deals. Negotiate directly with our team for the best price.</div>
-      </div>
-      <div className="why-card" data-aos="fade-up" data-aos-delay="240">
-        <div className="why-icon"><i className="fas fa-file-alt"></i></div>
-        <div className="why-title">Full Documentation</div>
-        <div className="why-desc">Export certificates, de-registration, customs docs — we handle everything end-to-end.</div>
-      </div>
-      <div className="why-card" data-aos="fade-up" data-aos-delay="320">
-        <div className="why-icon"><i className="fas fa-headset"></i></div>
-        <div className="why-title">24/7 Support</div>
-        <div className="why-desc">Our support team is always online via WeTalk, WhatsApp, and email around the clock.</div>
-      </div>
-      <div className="why-card" data-aos="fade-up" data-aos-delay="400">
-        <div className="why-icon"><i className="fas fa-lock"></i></div>
-        <div className="why-title">Secure Payment</div>
-        <div className="why-desc">Bank transfer, LC, and online payment options — all transactions are fully secured.</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 
 <div id="recently" style={{display: 'none'}}>
@@ -100,7 +62,6 @@ export default function Home() {
   </div>
 </div>
 
-
 <section id="shipping">
   <div className="container">
     <div className="section-header" data-aos="fade-up">
@@ -109,114 +70,66 @@ export default function Home() {
       <div className="gold-line"></div>
       <p className="section-desc" style={{marginTop: '16px'}}>From Japan to your country — transparent, reliable, end-to-end</p>
     </div>
-    <div className="shipping-grid">
-      <div data-aos="fade-right">
-        <div className="process-steps">
-          <div className="step">
-            <div className="step-num">1</div>
-            <div className="step-content">
-              <h4>Select Your Vehicle</h4>
-              <p>Browse our inventory, choose your car and request a quote or negotiate the price.</p>
-            </div>
-          </div>
-          <div className="step">
-            <div className="step-num">2</div>
-            <div className="step-content">
-              <h4>Payment & Invoice</h4>
-              <p>Secure your purchase via Bank Transfer or LC. We issue a formal commercial invoice.</p>
-            </div>
-          </div>
-          <div className="step">
-            <div className="step-num">3</div>
-            <div className="step-content">
-              <h4>Vehicle Preparation</h4>
-              <p>Deregistration, inspection, cleaning, and container loading at Japanese port.</p>
-            </div>
-          </div>
-          <div className="step">
-            <div className="step-num">4</div>
-            <div className="step-content">
-              <h4>Shipping & Tracking</h4>
-              <p>Your vehicle sets sail. We provide container tracking and ETD/ETA updates.</p>
-            </div>
-          </div>
-          <div className="step">
-            <div className="step-num">5</div>
-            <div className="step-content">
-              <h4>Customs Clearance</h4>
-              <p>We provide all export certificates, BL, and customs docs for smooth clearance.</p>
-            </div>
-          </div>
-          <div className="step">
-            <div className="step-num">6</div>
-            <div className="step-content">
-              <h4>Delivery to You 🎉</h4>
-              <p>Collect your car at port or request door delivery. Drive your dream!</p>
-            </div>
-          </div>
+    <div className="process-steps-grid">
+      <div className="step-card" data-aos="fade-up" data-aos-delay="0">
+        <div className="step-num">1</div>
+        <div className="step-content">
+          <h4>Select Your Vehicle</h4>
+          <p>Browse our inventory, choose your car and request a quote.</p>
         </div>
       </div>
-      <div data-aos="fade-left">
-        <div className="calc-card">
-          <div className="calc-title"><i className="fas fa-calculator"></i> Shipping Cost Estimator</div>
-          <div className="calc-field">
-            <div className="calc-label">Destination Country</div>
-            <select className="filter-select" id="calcCountry" style={{width: '100%'}}>
-              <option value="">Select Country</option>
-              <option data-cost="800" data-days="18">Tanzania</option>
-              <option data-cost="950" data-days="20">Kenya</option>
-              <option data-cost="1100" data-days="25">Nigeria</option>
-              <option data-cost="900" data-days="22">Ghana</option>
-              <option data-cost="1400" data-days="30">South Africa</option>
-              <option data-cost="750" data-days="16">Sri Lanka</option>
-              <option data-cost="680" data-days="14">Bangladesh</option>
-              <option data-cost="720" data-days="15">Pakistan</option>
-              <option data-cost="600" data-days="12">Myanmar</option>
-              <option data-cost="1800" data-days="35">New Zealand</option>
-              <option data-cost="1600" data-days="32">Australia</option>
-              <option data-cost="2100" data-days="38">UK</option>
-              <option data-cost="2400" data-days="42">USA</option>
-              <option data-cost="1900" data-days="35">Canada</option>
-              <option data-cost="2200" data-days="40">Germany</option>
-              <option data-cost="1200" data-days="28">UAE</option>
-              <option data-cost="1100" data-days="26">Saudi Arabia</option>
-              <option data-cost="1050" data-days="24">Qatar</option>
-            </select>
-          </div>
-          <div className="calc-field">
-            <div className="calc-label">Vehicle Type</div>
-            <select className="filter-select" id="calcType" style={{width: '100%'}}>
-              <option value="1">Standard Car (Sedan / Hatchback)</option>
-              <option value="1.2">SUV / 4x4</option>
-              <option value="1.5">Van / Minibus</option>
-              <option value="1.8">Truck / Heavy Vehicle</option>
-            </select>
-          </div>
-          <div className="calc-field">
-            <div className="calc-label">Container Type</div>
-            <select className="filter-select" id="calcContainer" style={{width: '100%'}}>
-              <option value="1">RO-RO (Roll-on/Roll-off)</option>
-              <option value="1">20ft Container (1 Car)</option>
-              <option value="0.75">40ft Container (Share)</option>
-            </select>
-          </div>
-          <button className="btn-filter" style={{width: '100%'}} onClick={() => { calcShipping() }}>
-            <i className="fas fa-ship"></i> Calculate Shipping
-          </button>
-          <div className="calc-result" id="calcResult">
-            <div className="calc-result-label">Estimated Shipping Cost</div>
-            <div className="calc-result-value" id="calcCostVal">—</div>
-            <div style={{marginTop: '10px', fontSize: '.78rem', color: 'var(--gray)'}}>
-              Estimated Transit: <span id="calcDaysVal" style={{color: 'var(--gold)', fontWeight: '600'}}>—</span>
-            </div>
-            <div style={{marginTop: '6px', fontSize: '.73rem', color: 'var(--gray)'}}>*Insurance & port handling fees may apply. Contact us for exact quotes.</div>
-          </div>
+      <div className="step-card" data-aos="fade-up" data-aos-delay="80">
+        <div className="step-num">2</div>
+        <div className="step-content">
+          <h4>Negotiate the Price</h4>
+          <p>Talk directly with our team — we believe in fair deals and the best price.</p>
+        </div>
+      </div>
+      <div className="step-card" data-aos="fade-up" data-aos-delay="0">
+        <div className="step-num">3</div>
+        <div className="step-content">
+          <h4>Payment &amp; Invoice</h4>
+          <p>Secure your purchase via Bank Transfer or LC. We issue a formal commercial invoice.</p>
+        </div>
+      </div>
+      <div className="step-card" data-aos="fade-up" data-aos-delay="80">
+        <div className="step-num">4</div>
+        <div className="step-content">
+          <h4>Vehicle Preparation</h4>
+          <p>Deregistration, inspection, cleaning, and container loading at Japanese port.</p>
+        </div>
+      </div>
+      <div className="step-card" data-aos="fade-up" data-aos-delay="0">
+        <div className="step-num">5</div>
+        <div className="step-content">
+          <h4>Pre-Shipment Photos</h4>
+          <p>Full condition photo set and inspection report shared before your car is loaded.</p>
+        </div>
+      </div>
+      <div className="step-card" data-aos="fade-up" data-aos-delay="80">
+        <div className="step-num">6</div>
+        <div className="step-content">
+          <h4>Shipping &amp; Tracking</h4>
+          <p>Your vehicle sets sail. We provide container tracking and ETD/ETA updates.</p>
+        </div>
+      </div>
+      <div className="step-card" data-aos="fade-up" data-aos-delay="0">
+        <div className="step-num">7</div>
+        <div className="step-content">
+          <h4>Customs Clearance</h4>
+          <p>We provide all export certificates, BL, and customs docs for smooth clearance.</p>
+        </div>
+      </div>
+      <div className="step-card" data-aos="fade-up" data-aos-delay="80">
+        <div className="step-num">8</div>
+        <div className="step-content">
+          <h4>Delivery to You 🎉</h4>
+          <p>Collect your car at port or request door delivery. Drive your dream!</p>
         </div>
       </div>
     </div>
   </div>
 </section>
-
 
 <section id="payment">
   <div className="container">
@@ -231,12 +144,6 @@ export default function Home() {
         <div className="payment-name">Bank Transfer (T/T)</div>
         <div className="payment-desc">Direct telegraphic transfer to our Japanese bank account. Fast, secure, and widely accepted for vehicle purchases worldwide.</div>
         <div style={{marginTop: '16px', fontSize: '.8rem', color: 'var(--gold)'}}><i className="fas fa-check-circle" style={{marginRight: '6px'}}></i>Most Popular Method</div>
-      </div>
-      <div className="payment-card" data-aos="fade-up" data-aos-delay="80">
-        <div className="payment-icon"><i className="fas fa-file-invoice"></i></div>
-        <div className="payment-name">Letter of Credit (LC)</div>
-        <div className="payment-desc">Ideal for large purchases. A bank-guaranteed payment method that protects both buyer and seller. Perfect for fleet buyers.</div>
-        <div style={{marginTop: '16px', fontSize: '.8rem', color: 'var(--gold)'}}><i className="fas fa-check-circle" style={{marginRight: '6px'}}></i>Best for Fleet Buyers</div>
       </div>
       <div className="payment-card" data-aos="fade-up" data-aos-delay="160">
         <div className="payment-icon"><i className="fas fa-credit-card"></i></div>
@@ -265,153 +172,55 @@ export default function Home() {
 </div>
 
 
-<section id="testimonials">
-  <div className="container">
-    <div className="section-header" data-aos="fade-up">
-      <div className="section-tag">Customer Reviews</div>
-      <h2 className="section-title">What Our <span className="gold">Clients Say</span></h2>
-      <div className="gold-line"></div>
-    </div>
-    <div className="testimonials-grid">
-      <div className="testi-card" data-aos="fade-up" data-aos-delay="0">
-        <div className="testi-stars">★★★★★</div>
-        <div className="testi-text">"BestBuy Auto exceeded every expectation. My Lexus LX570 arrived in perfect condition, all documents ready. Absolutely world-class service!"</div>
-        <div className="testi-author">
-          <div className="testi-avatar">MK</div>
-          <div><div className="testi-name">Mohammed K.</div><div className="testi-country">🇸🇦 Saudi Arabia</div></div>
-        </div>
-      </div>
-      <div className="testi-card" data-aos="fade-up" data-aos-delay="80">
-        <div className="testi-stars">★★★★★</div>
-        <div className="testi-text">"Incredible! I bought a Toyota Land Cruiser at a price I couldn't find locally. The negotiation team was very helpful. Will buy again!"</div>
-        <div className="testi-author">
-          <div className="testi-avatar">JO</div>
-          <div><div className="testi-name">James O.</div><div className="testi-country">🇳🇬 Nigeria</div></div>
-        </div>
-      </div>
-      <div className="testi-card" data-aos="fade-up" data-aos-delay="160">
-        <div className="testi-stars">★★★★★</div>
-        <div className="testi-text">"The WeTalk chat support was available when I needed it most. Got answers instantly. My Subaru Forester is now running perfectly in NZ!"</div>
-        <div className="testi-author">
-          <div className="testi-avatar">DW</div>
-          <div><div className="testi-name">David W.</div><div className="testi-country">🇳🇿 New Zealand</div></div>
-        </div>
-      </div>
-      <div className="testi-card" data-aos="fade-up" data-aos-delay="240">
-        <div className="testi-stars">★★★★★</div>
-        <div className="testi-text">"Professional, transparent, and fast. The shipping calculator was accurate to the dollar. Buying my second car from BestBuy Auto this year!"</div>
-        <div className="testi-author">
-          <div className="testi-avatar">AT</div>
-          <div><div className="testi-name">Amara T.</div><div className="testi-country">🇰🇪 Kenya</div></div>
-        </div>
-      </div>
-      <div className="testi-card" data-aos="fade-up" data-aos-delay="320">
-        <div className="testi-stars">★★★★★</div>
-        <div className="testi-text">"Imported a fleet of 8 vans for my business. BestBuy Auto handled everything flawlessly — LC payment, customs docs, the lot. Highly recommend!"</div>
-        <div className="testi-author">
-          <div className="testi-avatar">RB</div>
-          <div><div className="testi-name">Raj B.</div><div className="testi-country">🇱🇰 Sri Lanka</div></div>
-        </div>
-      </div>
-      <div className="testi-card" data-aos="fade-up" data-aos-delay="400">
-        <div className="testi-stars">★★★★★</div>
-        <div className="testi-text">"The car compare feature helped me decide between a BMW and Lexus. Great website, great cars, great team. 10/10 experience!"</div>
-        <div className="testi-author">
-          <div className="testi-avatar">YA</div>
-          <div><div className="testi-name">Yusuf A.</div><div className="testi-country">🇦🇪 UAE</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 
 <HomeFaqSection />
+<HomeGallerySection />
 
-<section id="contact">
+
+
+
+<section id="why">
   <div className="container">
     <div className="section-header" data-aos="fade-up">
-      <div className="section-tag">Get In Touch</div>
-      <h2 className="section-title">Contact <span className="gold">Our Team</span></h2>
+      <div className="section-tag">Why BestBuy Auto</div>
+      <h2 className="section-title">The <span className="gold">Gold Standard</span> in Export</h2>
       <div className="gold-line"></div>
     </div>
-    <div className="contact-grid">
-      <div data-aos="fade-right">
-        <div className="contact-info-card">
-          <div className="contact-item">
-            <div className="contact-icon"><i className="fas fa-envelope"></i></div>
-            <div>
-              <div className="contact-item-label">Business Email</div>
-              <div className="contact-item-value">sales@bestbuyauto.jp</div>
-              <div className="contact-item-value" style={{color: 'var(--gray)', fontSize: '.82rem'}}>support@bestbuyauto.jp</div>
-            </div>
-          </div>
-          <div className="contact-item">
-            <div className="contact-icon"><i className="fab fa-whatsapp"></i></div>
-            <div>
-              <div className="contact-item-label">WhatsApp</div>
-              <div className="contact-item-value">+81-90-XXXX-XXXX</div>
-            </div>
-          </div>
-          <div className="contact-item">
-            <div className="contact-icon"><i className="fas fa-map-marker-alt"></i></div>
-            <div>
-              <div className="contact-item-label">Office Location</div>
-              <div className="contact-item-value">Yokohama, Kanagawa, Japan</div>
-            </div>
-          </div>
-          <div className="contact-item">
-            <div className="contact-icon"><i className="fas fa-clock"></i></div>
-            <div>
-              <div className="contact-item-label">Business Hours</div>
-              <div className="contact-item-value">Mon–Sat: 9AM – 7PM JST</div>
-              <div className="contact-item-value" style={{color: 'var(--gold)', fontSize: '.82rem'}}>🟢 WeTalk Support: 24/7</div>
-            </div>
-          </div>
-          <div style={{marginTop: '8px'}}>
-            <a href="https://wa.me/8190XXXXXXXX" target="_blank" className="btn-hero-primary" style={{display: 'inline-flex', gap: '8px'}}>
-              <i className="fab fa-whatsapp"></i> Chat on WhatsApp
-            </a>
-          </div>
-        </div>
+    <div className="why-grid">
+      <div className="why-card" data-aos="fade-up" data-aos-delay="0">
+        <div className="why-icon"><i className="fas fa-shield-alt"></i></div>
+        <div className="why-title">100% Verified Stock</div>
+        <div className="why-desc">All vehicles are physically inspected and verified before listing. No surprises on delivery.</div>
       </div>
-      <div data-aos="fade-left">
-        <div style={{background: 'var(--dark2)', border: '1px solid var(--glass-border)', borderRadius: '20px', padding: '32px'}}>
-          <h3 style={{fontSize: '1.2rem', fontWeight: '700', marginBottom: '24px'}}>Send an Inquiry</h3>
-          <div className="form-group">
-            <label className="form-label">Full Name</label>
-            <input className="form-input" type="text" placeholder="John Smith" id="cName" />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Email Address</label>
-            <input className="form-input" type="email" placeholder="john@email.com" id="cEmail" />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Subject</label>
-            <select className="form-input form-select-full" id="cSubject">
-              <option>Vehicle Inquiry</option>
-              <option>Price Negotiation</option>
-              <option>Shipping Quote</option>
-              <option>Payment Information</option>
-              <option>General Question</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Message</label>
-            <textarea className="form-textarea" placeholder="Tell us what you're looking for…" id="cMessage"></textarea>
-          </div>
-          <button className="btn-submit" onClick={() => { sendInquiry() }}>
-            <i className="fas fa-paper-plane"></i> Send Inquiry
-          </button>
-        </div>
+      <div className="why-card" data-aos="fade-up" data-aos-delay="80">
+        <div className="why-icon"><i className="fas fa-globe"></i></div>
+        <div className="why-title">Global Export Network</div>
+        <div className="why-desc">Shipping to 120+ countries. Experienced freight partners ensure safe and timely delivery.</div>
+      </div>
+      <div className="why-card" data-aos="fade-up" data-aos-delay="160">
+        <div className="why-icon"><i className="fas fa-handshake"></i></div>
+        <div className="why-title">Price Negotiation</div>
+        <div className="why-desc">We believe in fair deals. Negotiate directly with our team for the best price.</div>
+      </div>
+      <div className="why-card" data-aos="fade-up" data-aos-delay="240">
+        <div className="why-icon"><i className="fas fa-file-alt"></i></div>
+        <div className="why-title">Full Documentation</div>
+        <div className="why-desc">Export certificates, de-registration, customs docs — we handle everything end-to-end.</div>
+      </div>
+      <div className="why-card" data-aos="fade-up" data-aos-delay="320">
+        <div className="why-icon"><i className="fas fa-headset"></i></div>
+        <div className="why-title">24/7 Support</div>
+        <div className="why-desc">Our support team is always online via WeTalk, WhatsApp, and email around the clock.</div>
+      </div>
+      <div className="why-card" data-aos="fade-up" data-aos-delay="400">
+        <div className="why-icon"><i className="fas fa-lock"></i></div>
+        <div className="why-title">Secure Payment</div>
+        <div className="why-desc">Bank transfer, LC, and online payment options — all transactions are fully secured.</div>
       </div>
     </div>
   </div>
 </section>
-
-
-
-
 <div className="float-group">
   
   <a className="float-btn float-wa" href="https://wa.me/8190XXXXXXXX?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details" target="_blank" rel="noreferrer">

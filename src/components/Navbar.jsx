@@ -28,7 +28,7 @@ export default function Navbar() {
       <nav id="navbar" className={scrolled ? "scrolled" : ""}>
         <Link to="/" className="nav-logo">
           <img
-            src="/second-logo-of-bba.png"
+            src="/bba-logo.png"
             alt="BBA Japan Logo"
             className="nav-logo-img"
             style={{ height: 170, alignItems: "center", display: "flex", marginTop: 15 }}

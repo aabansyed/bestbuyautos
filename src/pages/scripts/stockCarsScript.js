@@ -2,13 +2,23 @@ import { gsap } from "gsap";
 import AOS from "aos";
 import { fetchPublicCars } from "../../lib/carsApi";
 
+// Price helper: CurrencyContext ka window.formatPrice use karta hai.
+// data-price-usd attribute ki wajah se CurrencyContext ka MutationObserver
+// currency badalne par is price ko khud update kar deta hai.
+const fmt = (n) =>
+  typeof window.formatPrice === "function"
+    ? window.formatPrice(Number(n))
+    : `$${Number(n).toLocaleString()}`;
+
+const priceSpan = (usd, cls = "") =>
+  `<span ${cls ? `class="${cls}" ` : ""}data-price-usd="${Number(usd)}">${fmt(usd)}</span>`;
+
 export function initStockCarsPage() {
   const timers = [];
 
   let cars = [];
   let visibleCount = 6;
   let wishlist = JSON.parse(localStorage.getItem('bba_wishlist') || '[]');
-  let compareList = JSON.parse(localStorage.getItem('bba_compare') || '[]');
   let recentlyViewed = JSON.parse(localStorage.getItem('bba_recent') || '[]');
   let filteredCars = [...cars];
 
@@ -28,36 +38,47 @@ export function initStockCarsPage() {
     }
     show.forEach((car, i) => {
       const inWish = wishlist.includes(car.id);
-      const badgeHtml = car.badge ? `<div class="car-badge ${car.badge==='New'?'new':car.badge==='Hot'?'hot':''}">${car.badge}</div>` : '';
       const card = document.createElement('div');
       card.className = 'car-card';
       card.setAttribute('data-aos', i%3===0?'fade-up':i%3===1?'fade-left':'fade-right');
       card.setAttribute('data-aos-delay', (i%3)*80+'');
+      const dash = (v) => (v === undefined || v === null || v === '' ? '-' : v);
+      const row = (icon, label, value) => `
+            <div class="sbt-spec">
+              <i class="fas ${icon}"></i>
+              <div><div class="sbt-spec-val">${dash(value)}</div><div class="sbt-spec-label">${label}</div></div>
+            </div>`;
       card.innerHTML = `
-        <div class="car-img-wrap">
-          ${badgeHtml}
+        <div class="car-img-wrap" onclick="openCarModal(${car.id})">
           <img src="${car.imgs[0]}" alt="${car.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800'"/>
           <div class="car-wishlist ${inWish?'active':''}" onclick="toggleWishlist(event,${car.id})" title="Wishlist">
             <i class="fa${inWish?'s':'r'} fa-heart"></i>
           </div>
         </div>
         <div class="car-body">
-          <div class="car-brand">${car.brand}</div>
-          <div class="car-name">${car.name}</div>
-          <div class="car-specs">
-            <div class="spec-pill"><i class="fas fa-calendar"></i> ${car.year}</div>
-            <div class="spec-pill"><i class="fas fa-tachometer-alt"></i> ${car.mileage.toLocaleString()} km</div>
-            <div class="spec-pill"><i class="fas fa-gas-pump"></i> ${car.fuel}</div>
-            <div class="spec-pill"><i class="fas fa-cogs"></i> ${car.trans}</div>
+          <div class="sbt-tags">
+            <span class="sbt-tag sbt-tag-stock">BBA Stock</span>
+            ${car.badge ? `<span class="sbt-tag sbt-tag-${car.badge==='Hot'?'hot':'new'}">${car.badge==='New'?'New Arrival':car.badge}</span>` : ''}
           </div>
-          <div class="car-footer">
-            <div class="car-price">$${car.price.toLocaleString()}</div>
-            <div class="car-actions">
-              <button class="btn-card btn-card-outline" onclick="addCompare(event,${car.id})" title="Compare">
-                <i class="fas fa-balance-scale"></i>
-              </button>
-              <button class="btn-card btn-card-primary" onclick="openCarModal(${car.id})">View</button>
+          <div class="car-name sbt-title" onclick="openCarModal(${car.id})">${car.year} ${String(car.brand).toUpperCase()} ${car.name}</div>
+          <div class="sbt-spec-grid">
+            ${row('fa-tachometer-alt','Mileage', car.mileage.toLocaleString()+' km')}
+            ${row('fa-gas-pump','Fuel Type', car.fuel)}
+            ${row('fa-cogs','Transmission', car.trans)}
+            ${row('fa-car-side','Body Type', car.body)}
+            ${row('fa-microchip','Engine', car.engine)}
+            ${row('fa-bolt','Power', car.hp ? car.hp+' HP' : '')}
+          </div>
+          <div class="sbt-meta">
+            <div><span>Registration:</span> ${car.year}</div>
+            <div><span>Body color:</span> ${dash(car.color)}</div>
+          </div>
+          <div class="car-footer sbt-footer">
+            <div>
+              <div class="sbt-price-label">Vehicle Price</div>
+              <div class="car-price">${priceSpan(car.price)}</div>
             </div>
+            <button class="btn-card btn-card-primary" onclick="openCarModal(${car.id})">View Details</button>
           </div>
         </div>`;
       grid.appendChild(card);
@@ -80,6 +101,7 @@ export function initStockCarsPage() {
     const trans = document.getElementById('fTrans').value;
     const body = document.getElementById('fBody').value;
     const maxMiles = parseFloat(document.getElementById('fMileage').value) || Infinity;
+    const year = document.getElementById('fYear')?.value || '';
 
     filteredCars = cars.filter(c => {
       if(search && !`${c.brand} ${c.name}`.toLowerCase().includes(search)) return false;
@@ -88,6 +110,12 @@ export function initStockCarsPage() {
       if(trans && c.trans !== trans) return false;
       if(body && c.body !== body) return false;
       if(c.mileage > maxMiles) return false;
+      if(year) {
+        const [lo, hi] = year.split(/[-–]/).map(Number);
+        const maxYear = hi || lo;
+        const cy = Number(c.year);
+        if(cy < lo || cy > maxYear) return false;
+      }
       if(price) {
         if(price==='0-5000' && c.price>=5000) return false;
         if(price==='5000-15000' && (c.price<5000||c.price>=15000)) return false;
@@ -131,7 +159,7 @@ export function initStockCarsPage() {
       <div class="modal-price-row">
         <div>
           <div style="font-size:.72rem;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Export Price (FOB Japan)</div>
-          <div class="modal-price">$${car.price.toLocaleString()}</div>
+          <div class="modal-price">${priceSpan(car.price)}</div>
           <div style="font-size:.75rem;color:var(--gray);margin-top:4px">+ Shipping & Customs (varies by country)</div>
         </div>
         <div style="text-align:right">
@@ -140,10 +168,8 @@ export function initStockCarsPage() {
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn-modal btn-buy" onclick="openPayModal(${car.id})"><i class="fas fa-shopping-cart"></i> Buy Now</button>
-        <button class="btn-modal btn-nego" onclick="openNego(${car.id})"><i class="fas fa-comments-dollar"></i> Negotiate</button>
+        <button class="btn-modal btn-buy" onclick="openPayModal(${car.id})"><i class="fas fa-envelope"></i> Verify via Email</button>
         <a class="btn-modal btn-whatsapp" href="https://wa.me/81?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(car.name)}%2C%20please%20share%20details" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-        <button class="btn-modal btn-compare" onclick="addCompare(null,${car.id})"><i class="fas fa-balance-scale"></i> Compare</button>
       </div>`;
     window.openModal('carModal');
     addToRecent(car.id);
@@ -156,57 +182,6 @@ export function initStockCarsPage() {
     else { wishlist.splice(idx,1); window.showToast('Removed from wishlist', 'info'); }
     localStorage.setItem('bba_wishlist', JSON.stringify(wishlist));
     renderCars();
-  }
-
-  function addCompare(e, id) {
-    if(e) e.stopPropagation();
-    if(compareList.includes(id)) { window.showToast('Already in compare', 'info'); return; }
-    if(compareList.length >= 3) { window.showToast('Max 3 cars to compare', 'info'); return; }
-    compareList.push(id);
-    localStorage.setItem('bba_compare', JSON.stringify(compareList));
-    updateCompareBar();
-    window.showToast('Added to compare ⚖️', 'success');
-  }
-  function clearCompare() {
-    compareList = [];
-    localStorage.setItem('bba_compare', JSON.stringify(compareList));
-    updateCompareBar();
-  }
-  function updateCompareBar() {
-    const bar = document.getElementById('compareBar');
-    const itemsDiv = document.getElementById('compareItemsBar');
-    if (!bar || !itemsDiv) return;
-    if(compareList.length === 0) { bar.classList.remove('show'); return; }
-    bar.classList.add('show');
-    itemsDiv.innerHTML = compareList.map(id => {
-      const c = cars.find(x=>x.id===id);
-      return c ? `<div class="compare-chip">${c.brand} ${c.name.split(' ').slice(0,2).join(' ')}<span class="compare-chip-remove" onclick="removeCompare(${id})">×</span></div>` : '';
-    }).join('');
-  }
-  function removeCompare(id) {
-    compareList = compareList.filter(x=>x!==id);
-    localStorage.setItem('bba_compare', JSON.stringify(compareList));
-    updateCompareBar();
-  }
-  function doCompare() {
-    if(compareList.length < 2) { window.showToast('Select at least 2 cars to compare', 'info'); return; }
-    const carsToCompare = compareList.map(id => cars.find(c=>c.id===id)).filter(Boolean);
-    const fields = ['year','price','mileage','fuel','trans','body','engine','hp'];
-    const labels = {year:'Year',price:'Price',mileage:'Mileage (km)',fuel:'Fuel',trans:'Transmission',body:'Body',engine:'Engine',hp:'Horsepower'};
-    let html = `<div style="display:grid;grid-template-columns:120px ${carsToCompare.map(()=>'1fr').join(' ')};gap:0">
-      <div></div>${carsToCompare.map(c=>`<div style="text-align:center;padding:12px 8px;background:rgba(201,168,76,0.06);border:1px solid var(--glass-border);border-radius:10px;margin:0 4px">
-        <img src="${c.imgs[0]}" style="width:100%;height:100px;object-fit:cover;border-radius:8px;margin-bottom:8px"/>
-        <div style="font-weight:700;font-size:.88rem">${c.brand}</div>
-        <div style="font-size:.78rem;color:var(--gray)">${c.name}</div>
-      </div>`).join('')}
-      ${fields.map(f=>`
-        <div style="padding:10px 8px;font-size:.78rem;color:var(--gray);display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04)">${labels[f]}</div>
-        ${carsToCompare.map(c=>`<div style="padding:10px 8px;text-align:center;font-weight:600;font-size:.85rem;border-bottom:1px solid rgba(255,255,255,0.04);${f==='price'?'color:var(--gold);font-family:Orbitron':''}">
-          ${f==='price'?'$'+c[f].toLocaleString():f==='mileage'?c[f].toLocaleString()+'km':f==='hp'?c[f]+' HP':c[f]}
-        </div>`).join('')}`).join('')}
-    </div>`;
-    document.getElementById('compareBody').innerHTML = html;
-    window.openModal('compareModal');
   }
 
   function addToRecent(id) {
@@ -228,7 +203,7 @@ export function initStockCarsPage() {
         <img src="${c.imgs[0]}" alt="${c.name}" onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400'"/>
         <div class="recent-mini-body">
           <div class="recent-mini-name">${c.brand} ${c.name.split(' ').slice(0,2).join(' ')}</div>
-          <div class="recent-mini-price">$${c.price.toLocaleString()}</div>
+          <div class="recent-mini-price">${priceSpan(c.price)}</div>
         </div>
       </div>` : '';
     }).join('');
@@ -240,40 +215,77 @@ export function initStockCarsPage() {
     if (section) section.style.display='none';
   }
 
-  function openNego(id) {
-    const car = cars.find(c=>c.id===id);
-    if(!car) return;
-    document.getElementById('negoCarDisplay').value = `${car.brand} ${car.name}`;
-    document.getElementById('negoListedPrice').value = `$${car.price.toLocaleString()} USD`;
-    document.getElementById('negoCarName').value = car.name;
-    window.closeModal('carModal');
-    window.openModal('negoModal');
-  }
-  function submitNego() {
-    const carName = document.getElementById('negoCarName').value;
-    const price = document.getElementById('negoPrice').value;
-    const name = document.getElementById('negoName').value;
-    const email = document.getElementById('negoEmail').value;
-    const msg = document.getElementById('negoMsg').value;
-    if(!price || !name || !email) { window.showToast('Please fill all required fields', 'info'); return; }
-    const subject = `Price Negotiation – ${carName}`;
-    const body = `Car: ${carName}\nOffered Price: $${price}\nFrom: ${name}\nEmail: ${email}\nMessage: ${msg}`;
-    window.location.href = `mailto:sales@bestbuyauto.jp?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.closeModal('negoModal');
-    window.showToast('Offer submitted! We\'ll respond within 24 hours. 🤝', 'success');
-  }
+  let payCar = null;
 
   function openPayModal(id) {
     const car = cars.find(c=>c.id===id);
     if(!car) return;
-    document.getElementById('payCarName').textContent = `${car.brand} ${car.name}`;
-    document.getElementById('payCarPrice').textContent = `$${car.price.toLocaleString()} USD`;
+    payCar = car;
+    const stock = String(car.stockId);
+    const setText = (el, v) => { const n = document.getElementById(el); if (n) n.textContent = v; };
+    const setVal = (el, v) => { const n = document.getElementById(el); if (n) n.value = v; };
+
+    const img = document.getElementById('payCarImg');
+    if (img) img.src = car.imgs[0];
+    setText('payCarName', `${car.year} ${String(car.brand).toUpperCase()} ${car.name}`);
+    setText('payCarStock', `Stock Id : ${stock}`);
+
+    const payPrice = document.getElementById('payCarPrice');
+    if (payPrice) {
+      payPrice.setAttribute('data-price-usd', String(Number(car.price)));
+      payPrice.textContent = fmt(car.price);
+    }
+
+    setVal('payName', '');
+    setVal('payEmail', '');
+    setVal('payPhone', '');
+    setVal('payWhatsapp', '');
+    setVal('payRemarks', stock);
+
     window.closeModal('carModal');
     window.openModal('payModal');
   }
+
   function submitPayment() {
+    const v = (id) => (document.getElementById(id)?.value || '').trim();
+    const name = v('payName');
+    const email = v('payEmail');
+    const remarks = v('payRemarks');
+
+    if (!name || !email || !remarks) {
+      window.showToast('Please fill all required fields', 'info');
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      window.showToast('Please enter a valid email address', 'info');
+      return;
+    }
+
+    const code = v('payCode');
+    const phoneRaw = v('payPhone').replace(/^0+/, '');
+    const waRaw = v('payWhatsapp').replace(/^0+/, '');
+    const phone = phoneRaw ? `${code} ${phoneRaw}` : '-';
+    const whatsapp = waRaw ? `${code} ${waRaw}` : '-';
+
+    const carTitle = payCar ? `${payCar.year} ${payCar.brand} ${payCar.name}` : '';
+    const carPrice = payCar ? `USD ${payCar.price.toLocaleString()}` : '';
+    const subject = `Total Price Request - ${carTitle} (${payCar ? payCar.stockId : ''})`;
+    const body = [
+      `Vehicle: ${carTitle}`,
+      `Stock Id: ${payCar ? payCar.stockId : ''}`,
+      `Vehicle Price: ${carPrice}`,
+      '',
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      `WhatsApp: ${whatsapp}`,
+      '',
+      `Remarks: ${remarks}`,
+    ].join('\n');
+
     window.closeModal('payModal');
-    window.showToast('🎉 Request received! Our team will contact you shortly.', 'success');
+    window.showToast('Opening email to verify your request… 📩', 'success');
+    window.location.href = `mailto:sales@bestbuyauto.jp?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   function showGridLoading() {
@@ -312,6 +324,7 @@ export function initStockCarsPage() {
         engine: row.engine,
         hp: row.hp,
         badge: row.badge,
+        stockId: row.stock_id || row.id,
         imgs: row.images && row.images.length ? row.images : ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800'],
         desc: row.description,
       }));
@@ -320,6 +333,21 @@ export function initStockCarsPage() {
       const bodyParam = params.get('body');
       const qParam = params.get('q');
       const fuelParam = params.get('fuel');
+      const brandParam = params.get('brand');
+      const priceParam = params.get('price');
+      const yearParam = params.get('year');
+      const mileageParam = params.get('mileage');
+      const setSelect = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val && [...el.options].some(o => o.value === val)) el.value = val;
+      };
+      setSelect('fBrand', brandParam);
+      setSelect('fPrice', priceParam);
+      setSelect('fYear', yearParam);
+      if (mileageParam) {
+        const mEl = document.getElementById('fMileage');
+        if (mEl) mEl.value = mileageParam;
+      }
       if (bodyParam) {
         const bodySelect = document.getElementById('fBody');
         if (bodySelect && [...bodySelect.options].some(o => o.value === bodyParam)) {
@@ -337,7 +365,7 @@ export function initStockCarsPage() {
         if (searchInput) searchInput.value = qParam;
       }
 
-      if (bodyParam || qParam || fuelParam) {
+      if (bodyParam || qParam || fuelParam || brandParam || priceParam || yearParam || mileageParam) {
         applyFilters();
       } else {
         filteredCars = [...cars];
@@ -359,13 +387,7 @@ export function initStockCarsPage() {
   window.applyFilters = applyFilters;
   window.openCarModal = openCarModal;
   window.toggleWishlist = toggleWishlist;
-  window.addCompare = addCompare;
-  window.clearCompare = clearCompare;
-  window.removeCompare = removeCompare;
-  window.doCompare = doCompare;
   window.clearRecent = clearRecent;
-  window.openNego = openNego;
-  window.submitNego = submitNego;
   window.openPayModal = openPayModal;
   window.submitPayment = submitPayment;
 
@@ -373,7 +395,6 @@ export function initStockCarsPage() {
   const t = setTimeout(() => {
     AOS.init({ duration:700, once:true, easing:'ease-out-cubic', offset:80 });
     updateRecentlyViewed();
-    updateCompareBar();
     loadCarsFromSupabase();
   }, 300);
   timers.push(t);

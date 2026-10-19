@@ -6,12 +6,12 @@ import {
   createCar,
   updateCar,
   uploadCarImage,
+  fetchDistinctBrands,
   BODY_TYPES,
   FUEL_TYPES,
   TRANS_TYPES,
   BADGE_TYPES,
 } from "../../lib/carsApi";
-
 const emptyCar = {
   maker: "",
   name: "",
@@ -44,7 +44,29 @@ export default function CarForm() {
   const [bodyOptions, setBodyOptions] = useState(BODY_TYPES);
   const [addingBody, setAddingBody] = useState(false);
   const [newBodyValue, setNewBodyValue] = useState("");
+  const [brandOptions, setBrandOptions] = useState([]);
+  const [addingBrand, setAddingBrand] = useState(false);
+  const [newBrandValue, setNewBrandValue] = useState("");
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const brands = await fetchDistinctBrands();
+        setBrandOptions(brands);
+      } catch {
+        // non-critical — the "+ Add new brand" option still works
+      }
+    })();
+  }, []);
+
+  const confirmNewBrand = () => {
+    const value = newBrandValue.trim();
+    if (!value) { setAddingBrand(false); return; }
+    setBrandOptions((prev) => (prev.includes(value) ? prev : [...prev, value].sort()));
+    setCar((prev) => ({ ...prev, brand: value }));
+    setNewBrandValue("");
+    setAddingBrand(false);
+  };
   // Body-type dropdown always starts from the built-in list, plus any
   // custom types an admin has already added to real cars in the DB —
   // so once someone adds "Pickup" once, it shows up as a normal option
@@ -186,59 +208,38 @@ export default function CarForm() {
 
       <form className="admin-form" onSubmit={handleSubmit}>
         <div className="admin-form-grid">
-          <div className="form-group">
+                  <div className="form-group">
             <label className="form-label">Brand *</label>
-            <input className="form-input" value={car.brand} onChange={set("brand")} placeholder="Toyota" />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Model Name *</label>
-            <input className="form-input" value={car.name} onChange={set("name")} placeholder="Land Cruiser 200 GX-R" />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Year *</label>
-            <input className="form-input" type="number" value={car.year} onChange={set("year")} />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Price (USD) *</label>
-            <input className="form-input" type="number" value={car.price} onChange={set("price")} placeholder="52000" />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Mileage (km)</label>
-            <input className="form-input" type="number" value={car.mileage} onChange={set("mileage")} placeholder="38000" />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Body Type</label>
-            {!addingBody ? (
+            {!addingBrand ? (
               <select
                 className="form-input"
-                value={car.body}
+                value={car.brand}
                 onChange={(e) => {
-                  if (e.target.value === "__add_new__") { setAddingBody(true); return; }
-                  set("body")(e);
+                  if (e.target.value === "__add_new__") { setAddingBrand(true); return; }
+                  set("brand")(e);
                 }}
               >
-                {bodyOptions.map((b) => <option key={b} value={b}>{b}</option>)}
-                <option value="__add_new__">+ Add new body type…</option>
+                <option value="">Select brand…</option>
+                {brandOptions.map((b) => <option key={b} value={b}>{b}</option>)}
+                <option value="__add_new__">+ Add new brand…</option>
               </select>
             ) : (
               <div style={{ display: "flex", gap: 8 }}>
                 <input
                   className="form-input"
                   autoFocus
-                  placeholder="e.g. Pickup Truck"
-                  value={newBodyValue}
-                  onChange={(e) => setNewBodyValue(e.target.value)}
+                  placeholder="e.g. Toyota"
+                  value={newBrandValue}
+                  onChange={(e) => setNewBrandValue(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") { e.preventDefault(); confirmNewBody(); }
-                    if (e.key === "Escape") { setAddingBody(false); setNewBodyValue(""); }
+                    if (e.key === "Enter") { e.preventDefault(); confirmNewBrand(); }
+                    if (e.key === "Escape") { setAddingBrand(false); setNewBrandValue(""); }
                   }}
                 />
-                <button type="button" className="admin-btn-secondary" onClick={confirmNewBody}>
+                <button type="button" className="admin-btn-secondary" onClick={confirmNewBrand}>
                   <i className="fas fa-check"></i>
                 </button>
-                <button type="button" className="admin-btn-secondary" onClick={() => { setAddingBody(false); setNewBodyValue(""); }}>
+                <button type="button" className="admin-btn-secondary" onClick={() => { setAddingBrand(false); setNewBrandValue(""); }}>
                   <i className="fas fa-xmark"></i>
                 </button>
               </div>

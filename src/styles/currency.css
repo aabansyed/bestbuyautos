@@ -1,0 +1,51 @@
+.cs { position: relative; display: inline-block; }
+
+.cs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+  padding: 6px 4px;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cs-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.cs-chev { transition: transform .15s ease; }
+.cs-chev.open { transform: rotate(180deg); }
+
+.cs-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 1000;
+  min-width: 190px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+.cs-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  color: #222;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cs-menu button:hover,
+.cs-menu button:focus-visible { background: #f4f4f4; outline: none; }
+.cs-menu button.active { background: #fdecec; color: #b3141b; font-weight: 600; }
+.cs-symbol { width: 16px; text-align: center; }
+.cs-code { font-weight: 600; }
+.cs-name { margin-left: auto; font-size: .8em; opacity: .6; }

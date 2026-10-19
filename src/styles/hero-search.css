@@ -1,0 +1,112 @@
+/* Hero search card (Drive What's Next) */
+.hero-search {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  max-width: 395px;
+  z-index: 30;
+}
+
+.hero-search-title {
+  margin: 0 0 14px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+.hero-search-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 18px 24px 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.hero-search-count {
+  font-size: 0.78rem;
+  color: #222;
+  margin-bottom: 18px;
+}
+
+.hs-field {
+  position: relative;
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+  background: #fff;
+}
+
+.hs-field input,
+.hs-field select {
+  width: 100%;
+  height: 42px;
+  padding: 0 44px 0 16px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.92rem;
+  color: #333;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.hs-field input { cursor: text; }
+
+.hs-field input::placeholder { color: #b5b5b5; }
+
+/* select ka placeholder (empty option) halka dikhe */
+.hs-field select:invalid,
+.hs-field select option[value=""] { color: #b5b5b5; }
+
+.hs-field select option { color: #333; }
+
+.hs-field input[list]::-webkit-calendar-picker-indicator { display: none !important; }
+
+.hs-field i {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: #c4c4c4;
+  pointer-events: none;
+}
+
+.hs-field:focus-within { border-color: #e60012; z-index: 1; }
+.hs-field:focus-within i { color: #e60012; }
+
+.hero-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 0 0 4px 4px;
+  background: #e60012;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hero-search-btn:hover { background: #c4000f; }
+
+@media (max-width: 768px) {
+  .hero-search {
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    width: auto;
+    top: auto;
+    bottom: 16px;
+    transform: none;
+  }
+  .hero-search-title { font-size: 1.5rem; margin-bottom: 8px; }
+  .hero-search-card { padding: 14px 16px 16px; }
+}

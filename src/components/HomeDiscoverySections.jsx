@@ -6,23 +6,25 @@ import "../styles/discovery.css";
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500";
 
 export default function HomeDiscoverySections() {
-  const [bodyTypes, setBodyTypes] = useState(null);
+  const [brands, setBrands] = useState(null);
   const [models, setModels] = useState(null);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     (async () => {
       try {
         const cars = await fetchPublicCars();
 
-        // ── Body types: one representative card per body type, with count ──
-        const byBody = {};
+        const byBrand = {};
         cars.forEach((c) => {
-          if (!byBody[c.body]) byBody[c.body] = { body: c.body, count: 0, image: c.images?.[0] || FALLBACK_IMG };
-          byBody[c.body].count++;
+          byBrand[c.brand] = (byBrand[c.brand] || 0) + 1;
         });
-        setBodyTypes(Object.values(byBody).sort((a, b) => b.count - a.count).slice(0, 6));
+        setBrands(
+          Object.entries(byBrand)
+            .map(([brand, count]) => ({ brand, count }))
+            .sort((a, b) => b.count - a.count)
+        );
 
-        // ── Popular models: group by brand + model name, most-listed first ──
         const byModel = {};
         cars.forEach((c) => {
           const key = `${c.brand} ${c.name}`;
@@ -31,82 +33,92 @@ export default function HomeDiscoverySections() {
           }
           byModel[key].count++;
         });
-        setModels(Object.values(byModel).sort((a, b) => b.count - a.count).slice(0, 6));
+        setModels(Object.values(byModel).sort((a, b) => b.count - a.count).slice(0, 5));
+
+        const bodySet = new Set(cars.map((c) => c.body).filter(Boolean));
+        const fuelSet = new Set(cars.map((c) => c.fuel).filter(Boolean));
+        setTags([
+          ...Array.from(bodySet).map((b) => ({ label: b, href: `/stock-cars?body=${encodeURIComponent(b)}` })),
+          ...Array.from(fuelSet).map((f) => ({ label: f, href: `/stock-cars?fuel=${encodeURIComponent(f)}` })),
+        ]);
       } catch (err) {
         console.error("Failed to load discovery sections:", err);
-        setBodyTypes([]);
+        setBrands([]);
         setModels([]);
       }
     })();
   }, []);
 
   return (
-    <>
-      {/* ── BROWSE BY BODY TYPE ── */}
-      <section className="discover-section">
-        <div className="container">
-          <div className="section-header" data-aos="fade-up">
-            <div className="section-tag">Browse By Category</div>
-            <h2 className="section-title">Shop By <span className="gold">Body Type</span></h2>
-            <div className="gold-line"></div>
-            <p className="section-desc" style={{ marginTop: "16px" }}>
-              Pick a body style to see every matching car in stock
-            </p>
-          </div>
-
-          {bodyTypes === null && (
-            <div style={{ textAlign: "center", padding: "40px 0", color: "var(--gray)" }}>
-              <i className="fas fa-circle-notch fa-spin" style={{ fontSize: "1.6rem", color: "var(--gold)" }}></i>
-            </div>
-          )}
-
-          {bodyTypes && bodyTypes.length === 0 && (
-            <div style={{ textAlign: "center", padding: "40px 0", color: "var(--gray)" }}>
-              No cars in stock yet.
-            </div>
-          )}
-
-          {bodyTypes && bodyTypes.length > 0 && (
-            <div className="discover-grid" data-aos="fade-up" data-aos-delay="100">
-              {bodyTypes.map((b) => (
-                <Link to={`/stock-cars?body=${encodeURIComponent(b.body)}`} className="discover-card" key={b.body}>
-                  <div className="discover-card-img" style={{ backgroundImage: `url(${b.image})` }}>
-                    <div className="discover-card-overlay"></div>
-                    <span className="discover-count-badge">{b.count} {b.count === 1 ? "car" : "cars"}</span>
-                  </div>
-                  <div className="discover-card-label">{b.body}</div>
-                </Link>
-              ))}
-            </div>
-          )}
+    <section className="brand-browse-section">
+      <div className="container">
+        <div className="section-header" data-aos="fade-up">
+          <div className="section-tag">Browse Our Inventory</div>
+          <h2 className="section-title">Find Your Car By <span className="gold">Brand</span></h2>
+          <div className="gold-line"></div>
         </div>
-      </section>
 
-      {/* ── POPULAR MODELS ── */}
-      <section className="discover-section discover-section-alt">
-        <div className="container">
-          <div className="section-header" data-aos="fade-up">
-            <div className="section-tag">Trending Now</div>
-            <h2 className="section-title">Popular <span className="gold">Models</span></h2>
-            <div className="gold-line"></div>
-            <p className="section-desc" style={{ marginTop: "16px" }}>
-              The models our customers view and ask about most
-            </p>
+        {brands === null && (
+          <div style={{ textAlign: "center", padding: "40px 0", color: "var(--gray)" }}>
+            <i className="fas fa-circle-notch fa-spin" style={{ fontSize: "1.6rem", color: "var(--gold)" }}></i>
           </div>
+        )}
 
-          {models && models.length > 0 && (
-            <div className="popular-grid" data-aos="fade-up" data-aos-delay="100">
-              {models.map((m) => (
-                <Link to={`/inventory?q=${encodeURIComponent(m.key)}`} className="popular-card" key={m.key}>
-                  <div className="popular-card-img" style={{ backgroundImage: `url(${m.image})` }}></div>
-                  <div className="popular-card-brand">{m.brand}</div>
-                  <div className="popular-card-name">{m.name} <span>({m.count})</span></div>
-                </Link>
-              ))}
+        {brands && (
+          <div className="brand-browse-grid" data-aos="fade-up" data-aos-delay="100">
+
+            <aside className="brand-sidebar">
+              <div className="brand-sidebar-header">Browse By Car Brand</div>
+              <div className="brand-list">
+                {brands.length === 0 && (
+                  <div className="brand-empty">No cars in stock yet.</div>
+                )}
+                {brands.map((b) => (
+                  <Link to={`/stock-cars?brand=${encodeURIComponent(b.brand)}`} className="brand-row" key={b.brand}>
+                    <span className="brand-icon"><i className="fas fa-car-side"></i></span>
+                    <span className="brand-name">{b.brand}</span>
+                    <span className="brand-count">({b.count})</span>
+                  </Link>
+                ))}
+              </div>
+            </aside>
+
+            <div className="brand-browse-main">
+              <div className="brand-browse-topbar">
+                <span>For You To Choose</span>
+                <Link to="/stock-cars">Search Cars <i className="fas fa-chevron-right" style={{ fontSize: ".72rem" }}></i></Link>
+              </div>
+
+              <h3 className="brand-browse-subhead">Top Viewed Models</h3>
+              {models && models.length > 0 ? (
+                <div className="top-models-row">
+                  {models.map((m) => (
+                    <Link to={`/stock-cars?q=${encodeURIComponent(m.key)}`} className="top-model-card" key={m.key}>
+                      <div className="top-model-img" style={{ backgroundImage: `url(${m.image})` }}></div>
+                      <div className="top-model-brand">{m.brand}</div>
+                      <div className="top-model-name">{m.name} <span>({m.count})</span></div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                models && <div className="brand-empty">No models yet.</div>
+              )}
+
+              <h3 className="brand-browse-subhead">Popular Tags</h3>
+              {tags.length > 0 ? (
+                <div className="popular-tags-row">
+                  {tags.map((t) => (
+                    <Link to={t.href} className="popular-tag-pill" key={t.label}>{t.label}</Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="brand-empty">No tags yet.</div>
+              )}
             </div>
-          )}
-        </div>
-      </section>
-    </>
+
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

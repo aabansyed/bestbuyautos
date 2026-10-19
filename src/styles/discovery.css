@@ -1,129 +1,213 @@
-.discover-section {
+.brand-browse-section {
   padding: 80px 0;
 }
 
-.discover-section-alt {
-  background: var(--dark2);
-}
-
-/* ── Body type cards ── */
-.discover-grid {
+.brand-browse-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
-.discover-card {
-  display: block;
-  text-decoration: none;
+.brand-sidebar {
+  background: var(--dark2);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid var(--glass-border);
-  background: var(--dark2);
-  transition: transform 0.25s, border-color 0.25s;
 }
 
-.discover-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--gold);
-}
-
-.discover-card-img {
-  position: relative;
-  height: 190px;
-  background-size: cover;
-  background-position: center;
-}
-
-.discover-card-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.1) 0%, rgba(10, 10, 10, 0.85) 100%);
-}
-
-.discover-count-badge {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: rgba(10, 10, 10, 0.75);
-  border: 1px solid var(--glass-border);
-  color: var(--gold);
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 20px;
-}
-
-.discover-card-label {
+.brand-sidebar-header {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold-light));
+  color: #1a1206;
+  font-weight: 800;
+  font-size: 1rem;
   padding: 16px 20px;
-  font-family: "Playfair Display", serif;
-  font-size: 1.2rem;
-  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.brand-list {
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s;
+}
+
+.brand-row:hover {
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.brand-row:last-child {
+  border-bottom: none;
+}
+
+.brand-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.12);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 600;
   color: var(--white);
 }
 
-/* ── Popular model cards ── */
-.popular-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 18px;
+.brand-count {
+  font-size: 0.76rem;
+  color: var(--gray);
 }
 
-.popular-card {
+.brand-empty {
+  padding: 24px 20px;
+  color: var(--gray);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.brand-browse-main {
+  background: var(--dark2);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 22px 24px 28px;
+}
+
+.brand-browse-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--dark3);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 26px;
+}
+
+.brand-browse-topbar span {
+  font-weight: 700;
+  color: var(--white);
+  font-size: 0.95rem;
+}
+
+.brand-browse-topbar a {
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-browse-subhead {
+  font-family: "Playfair Display", serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0 0 16px;
+}
+
+.top-models-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.top-model-card {
   display: block;
   text-decoration: none;
-  text-align: left;
 }
 
-.popular-card-img {
-  height: 110px;
-  border-radius: 12px;
+.top-model-img {
+  height: 90px;
+  border-radius: 10px;
   background-size: cover;
   background-position: center;
   border: 1px solid var(--glass-border);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   transition: border-color 0.2s, transform 0.2s;
 }
 
-.popular-card:hover .popular-card-img {
+.top-model-card:hover .top-model-img {
   border-color: var(--gold);
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 }
 
-.popular-card-brand {
-  font-size: 0.7rem;
-  letter-spacing: 1px;
+.top-model-brand {
+  font-size: 0.68rem;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--gold);
   font-weight: 600;
 }
 
-.popular-card-name {
-  font-size: 0.85rem;
+.top-model-name {
+  font-size: 0.8rem;
   color: var(--white);
   font-weight: 600;
   margin-top: 2px;
 }
 
-.popular-card-name span {
+.top-model-name span {
   color: var(--gray);
   font-weight: 400;
 }
 
+.popular-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.popular-tag-pill {
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: 1px solid var(--glass-border);
+  background: var(--dark3);
+  color: var(--gray-light, #ccc);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.popular-tag-pill:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
 @media (max-width: 900px) {
-  .discover-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .brand-browse-grid {
+    grid-template-columns: 1fr;
   }
-  .popular-grid {
+  .top-models-row {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 560px) {
-  .discover-grid {
-    grid-template-columns: 1fr;
-  }
-  .popular-grid {
+  .top-models-row {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .brand-browse-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }

@@ -41,9 +41,11 @@ export default function StockCars() {
               </select>
               <select className="filter-select" id="fYear">
                 <option value="">Any Year</option>
-                <option>2024</option><option>2023</option><option>2022</option>
-                <option>2021</option><option>2020</option><option>2019</option>
-                <option>2018</option><option>2015–2017</option><option>2010–2014</option>
+                <option value="2023-2026">2023 – 2026</option>
+                <option value="2020-2022">2020 – 2022</option>
+                <option value="2015-2019">2015 – 2019</option>
+                <option value="2010-2014">2010 – 2014</option>
+                <option value="2000-2009">2000 – 2009</option>
               </select>
               <select className="filter-select" id="fPrice">
                 <option value="">Any Price</option>
@@ -104,112 +106,84 @@ export default function StockCars() {
         </div>
       </div>
 
-      <div className="modal-overlay" id="negoModal">
-        <div className="modal" style={{ maxWidth: '500px' }}>
-          <div className="modal-header">
-            <div className="modal-title">💬 Negotiate Price</div>
-            <button className="modal-close" onClick={() => { window.closeModal('negoModal') }}><i className="fas fa-times"></i></button>
-          </div>
-          <div className="modal-body">
-            <p style={{ color: 'var(--gray)', marginBottom: '24px', fontSize: '.9rem' }}>Submit your desired price and our team will respond within 24 hours.</p>
-            <input type="hidden" id="negoCarName" />
-            <div className="form-group">
-              <label className="form-label">Car</label>
-              <input className="form-input" id="negoCarDisplay" readOnly style={{ background: 'var(--dark3)' }} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Listed Price</label>
-              <input className="form-input" id="negoListedPrice" readOnly style={{ background: 'var(--dark3)', color: 'var(--gold)' }} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Your Desired Price (USD)</label>
-              <input className="form-input" type="number" id="negoPrice" placeholder="Enter your offer price" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Your Name</label>
-              <input className="form-input" type="text" id="negoName" placeholder="Full name" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Your Email</label>
-              <input className="form-input" type="email" id="negoEmail" placeholder="your@email.com" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Message (optional)</label>
-              <textarea className="form-textarea" id="negoMsg" placeholder="Any specific requirements or comments…" style={{ minHeight: '80px' }}></textarea>
-            </div>
-            <button className="btn-submit" onClick={() => { window.submitNego() }}>
-              <i className="fas fa-paper-plane"></i> Submit Offer
-            </button>
-          </div>
-        </div>
-      </div>
-
+      {/* Total Price request form (opened by "Verify via Email") */}
       <div className="modal-overlay" id="payModal">
         <div className="modal" style={{ maxWidth: '500px' }}>
           <div className="modal-header">
-            <div className="modal-title">💳 Purchase / Request Invoice</div>
+            <div className="modal-title">✉️ Verify via Email</div>
             <button className="modal-close" onClick={() => { window.closeModal('payModal') }}><i className="fas fa-times"></i></button>
           </div>
           <div className="modal-body">
-            <div style={{ background: 'linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03))', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '12px', padding: '16px', marginBottom: '24px' }}>
-              <div style={{ fontSize: '.78rem', color: 'var(--gray)' }}>Vehicle</div>
-              <div style={{ fontWeight: '700', marginBottom: '6px' }} id="payCarName">—</div>
-              <div style={{ fontFamily: '\'Orbitron\',sans-serif', fontSize: '1.3rem', color: 'var(--gold)' }} id="payCarPrice">—</div>
+            {/* Car summary */}
+            <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start', marginBottom: '20px' }}>
+              <img
+                id="payCarImg"
+                alt="Selected car"
+                style={{ width: '110px', height: '80px', objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }}
+                onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400'; }}
+              />
+              <div>
+                <div style={{ fontWeight: '700', lineHeight: 1.3 }} id="payCarName">—</div>
+                <div style={{ fontSize: '.75rem', color: 'var(--gray)', margin: '4px 0 8px' }} id="payCarStock">Stock Id : —</div>
+                <div style={{ fontSize: '.78rem', color: 'var(--gray)' }}>Vehicle Price</div>
+                <div style={{ fontFamily: '\'Orbitron\',sans-serif', fontSize: '1.1rem', color: 'var(--gold)' }} id="payCarPrice">—</div>
+              </div>
             </div>
+
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <div style={{ fontWeight: '700', fontSize: '1.1rem' }}>Total Price</div>
+              <div style={{ fontSize: '.85rem', color: 'var(--gray)' }}>Get an estimate by completing this form</div>
+            </div>
+
             <div className="form-group">
-              <label className="form-label">Payment Method</label>
-              <select className="form-input" id="payMethod">
-                <option>Bank Transfer (T/T)</option>
-                <option>Letter of Credit (LC)</option>
-                <option>Online Payment (Card)</option>
-                <option>Request Invoice Only</option>
-              </select>
+              <label className="form-label">Name <span style={{ color: '#e74c3c' }}>*</span></label>
+              <input className="form-input" type="text" id="payName" placeholder="Your full name" />
             </div>
+
             <div className="form-group">
-              <label className="form-label">Full Name</label>
-              <input className="form-input" type="text" placeholder="As per ID / passport" />
+              <label className="form-label">Email <span style={{ color: '#e74c3c' }}>*</span></label>
+              <input className="form-input" type="email" id="payEmail" placeholder="Enter your email" />
             </div>
+
             <div className="form-group">
-              <label className="form-label">Email</label>
-              <input className="form-input" type="email" placeholder="your@email.com" />
+              <label className="form-label">Phone Number</label>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <select className="form-input" id="payCode" style={{ width: '110px', flexShrink: 0 }}>
+                  <option value="+92">+92 PK</option>
+                  <option value="+81">+81 JP</option>
+                  <option value="+255">+255 TZ</option>
+                  <option value="+254">+254 KE</option>
+                  <option value="+234">+234 NG</option>
+                  <option value="+971">+971 AE</option>
+                  <option value="+966">+966 SA</option>
+                  <option value="+94">+94 LK</option>
+                  <option value="+64">+64 NZ</option>
+                  <option value="+61">+61 AU</option>
+                  <option value="+44">+44 UK</option>
+                  <option value="+1">+1 US</option>
+                </select>
+                <input className="form-input" type="tel" id="payPhone" placeholder="Enter your phone number" />
+              </div>
+              <div style={{ fontSize: '.7rem', color: 'var(--gray)', marginTop: '4px' }}>The first 0 will be omitted</div>
             </div>
+
             <div className="form-group">
-              <label className="form-label">Country</label>
-              <select className="form-input">
-                <option>Select country…</option>
-                <option>Tanzania</option><option>Kenya</option><option>Nigeria</option>
-                <option>UAE</option><option>Saudi Arabia</option><option>Sri Lanka</option>
-                <option>New Zealand</option><option>Australia</option><option>UK</option>
-                <option>USA</option><option>Other</option>
-              </select>
+              <label className="form-label">WhatsApp</label>
+              <input className="form-input" type="tel" id="payWhatsapp" placeholder="Enter your WhatsApp number" />
             </div>
+
+            <div className="form-group">
+              <label className="form-label">Remarks <span style={{ color: '#e74c3c' }}>*</span></label>
+              <textarea className="form-input" id="payRemarks" rows="3" style={{ resize: 'vertical' }}></textarea>
+            </div>
+
             <button className="btn-submit" onClick={() => { window.submitPayment() }}>
-              <i className="fas fa-lock"></i> Confirm & Proceed
+              <i className="fas fa-paper-plane"></i> Submit
             </button>
           </div>
         </div>
       </div>
 
-      <div className="modal-overlay" id="compareModal">
-        <div className="modal" style={{ maxWidth: '900px' }}>
-          <div className="modal-header">
-            <div className="modal-title">⚖️ Compare Cars</div>
-            <button className="modal-close" onClick={() => { window.closeModal('compareModal') }}><i className="fas fa-times"></i></button>
-          </div>
-          <div className="modal-body" id="compareBody"></div>
-        </div>
-      </div>
-
-      <div id="compareBar">
-        <div style={{ fontWeight: '700', color: 'var(--gold)', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <i className="fas fa-balance-scale"></i> Compare:
-        </div>
-        <div className="compare-items" id="compareItemsBar"></div>
-        <button className="btn-do-compare" onClick={() => { window.doCompare() }}>Compare Now</button>
-        <button onClick={() => { window.clearCompare() }} style={{ background: 'none', border: 'none', color: 'var(--gray)', cursor: 'pointer', fontSize: '.9rem', padding: '8px' }}>
-          <i className="fas fa-times"></i>
-        </button>
-      </div>
     </>
   );
 }

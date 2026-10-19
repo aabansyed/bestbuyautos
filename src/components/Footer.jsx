@@ -1,28 +1,40 @@
 import { Link } from "react-router-dom";
 
+import { useSiteSettings } from "../lib/siteSettings";
+
 export default function Footer() {
+  const { site } = useSiteSettings();
   return (
     <footer>
-      <div className="container">
-        <div className="footer-grid">
-          <div>
-            <div className="footer-logo-wrap">
-              <Link to="/" className="nav-logo">
-                <div className="logo-icon">🚗</div>
-                <div>
-                  <div className="logo-text">BBA JAPAN</div>
+    <div className="container">
+  <div className="footer-grid">
+    <div>
+      <div className="footer-logo-wrap">
+        <Link to="/" className="nav-logo">
+          <img
+            src="/bba-logo.png"
+            alt="BBA Japan Logo"
+            className="nav-logo-img"
+   
+            style={{
+              height: 100,
+              width: "auto",
+              display: "block",
+            }}
+
+          />
+          <div className="logo-text">BBA JAPAN</div>
                   <div className="logo-sub">JAPANESE CAR EXPORTER</div>
-                </div>
-              </Link>
-            </div>
+        </Link>
+      </div>
             <p className="footer-desc">Japan's premier car export marketplace. We connect buyers worldwide with the finest Japanese vehicles at unbeatable prices.</p>
-            <div className="social-row">
-              <a href="#" className="social-btn"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" className="social-btn"><i className="fab fa-instagram"></i></a>
-              <a href="#" className="social-btn"><i className="fab fa-twitter"></i></a>
-              <a href="#" className="social-btn"><i className="fab fa-youtube"></i></a>
-              <a href="#" className="social-btn"><i className="fab fa-linkedin-in"></i></a>
-            </div>
+           <div className="social-row">
+  {site.facebook && <a href={site.facebook} className="social-btn" target="_blank" rel="noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>}
+  {site.instagram && <a href={site.instagram} className="social-btn" target="_blank" rel="noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>}
+  {site.twitter && <a href={site.twitter} className="social-btn" target="_blank" rel="noreferrer" aria-label="Twitter"><i className="fab fa-twitter"></i></a>}
+  {site.youtube && <a href={site.youtube} className="social-btn" target="_blank" rel="noreferrer" aria-label="YouTube"><i className="fab fa-youtube"></i></a>}
+  {site.linkedin && <a href={site.linkedin} className="social-btn" target="_blank" rel="noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>}
+</div>
           </div>
           <div>
             <div className="footer-col-title">Quick Links</div>
@@ -56,7 +68,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <div className="footer-copyright">© 2024 BestBuy Auto. All rights reserved. Yokohama, Japan.</div>
+        <div className="footer-copyright">© {new Date().getFullYear()} BestBuy Auto. All rights reserved. {site.location_short}.</div>
           <div style={{ fontSize: ".78rem", color: "var(--gray)" }}>Trusted by 50,000+ customers in 120+ countries</div>
         </div>
       </div>

@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { to: "/admin/company", icon: "fa-file-lines", label: "Company Info" },
   { to: "/admin/faqs", icon: "fa-circle-question", label: "FAQs" },
   { to: "/admin/banner", icon: "fa-images", label: "Hero Banner" },
+  { to: "/admin/media", icon: "fa-photo-film", label: "Media Library" },
   { to: "/admin/partners", icon: "fa-handshake", label: "Our Partners" },
   { to: "/admin/blog", icon: "fa-newspaper", label: "Blog Posts" },
   { to: "/admin/how-to-buy", icon: "fa-route", label: "How to Buy" },
@@ -18,6 +19,8 @@ const NAV_ITEMS = [
   { to: "/admin/queries", icon: "fa-envelope", label: "Queries" },
   { to: "/admin/our-company", icon: "fa-building", label: "Our Company" },
   { to: "/admin/banking", icon: "fa-building-columns", label: "Bank Details" },
+  { to: "/admin/gallery", icon: "fa-images", label: "Photo Gallery" },  
+  { to: "/admin/settings", icon: "fa-sliders", label: "Site Settings" },
 ];
 
 export default function AdminLayout() {
