@@ -20,14 +20,16 @@ export default function CeoMessage() {
         <div style={{ position: 'absolute', inset: '0', background: 'radial-gradient(ellipse at 50% 100%,rgba(201,168,76,0.12) 0%,transparent 70%)' }}></div>
         <div style={{ position: 'relative', zIndex: '1', padding: '60px 32px' }}>
           <div className="breadcrumb-tag">About BestBuy Auto</div>
-          <h1 className="breadcrumb-title">Message from our <span style={{ background: 'linear-gradient(135deg,var(--gold-dark),var(--gold-light))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>CEO</span></h1>
-          <nav className="breadcrumb-nav">
-            <Link to="/">Home</Link>
-            <span className="sep"><i className="fas fa-chevron-right"></i></span>
-            <Link to="/our-company">About</Link>
-            <span className="sep"><i className="fas fa-chevron-right"></i></span>
-            <span className="active">CEO Message</span>
-          </nav>
+          <div className="ceo-title-row">
+  <h1 className="breadcrumb-title">Message from our <span style={{ background: 'linear-gradient(135deg,var(--gold-dark),var(--gold-light))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>CEO</span></h1>
+  <div className="breadcrumb-nav">
+    <Link to="/">Home</Link>
+    <span className="sep"><i className="fas fa-chevron-right"></i></span>
+    <Link to="/our-company">About</Link>
+    <span className="sep"><i className="fas fa-chevron-right"></i></span>
+    <span className="active">CEO Message</span>
+  </div>
+</div>
         </div>
       </div>
 
@@ -120,13 +122,17 @@ export default function CeoMessage() {
           </div>
         </div>
       </section>
-
-      <div className="float-group">
-        <a className="float-btn float-wa" href="https://wa.me/8190XXXXXXXX" target="_blank" rel="noreferrer">
-          <span className="float-label">WhatsApp Us</span>
-          <i className="fab fa-whatsapp"></i>
-        </a>
-      </div>
+<div className="float-group">
+  <a
+    className="float-btn float-wa"
+    href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+    target="_blank"
+    rel="noreferrer"
+  >
+    <span className="float-label">WhatsApp Us</span>
+    <i className="fab fa-whatsapp"></i>
+  </a>
+</div>
     </>
   );
 }

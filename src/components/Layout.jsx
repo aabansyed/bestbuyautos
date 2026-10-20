@@ -8,6 +8,9 @@ import { initGlobalScript } from "../utils/globalScript";
 
 import { useSiteSettings } from "../lib/siteSettings";
 
+const NOTICE_TEXT =
+  "For all payments and customer support, please use only the banking details and contact number provided on our website. Any communication or payment to other numbers will not be the responsibility of BestBuy Auto.";
+
 export default function Layout() {
   const { site } = useSiteSettings();
   const [loaderHidden, setLoaderHidden] = useState(false);
@@ -66,28 +69,24 @@ export default function Layout() {
       {/* Scroll Progress */}
       <div className="scroll-progress" id="scrollProgress"></div>
 
-      {/* Notice Marquee */}
-      <div className="marquee-bar">
-        <div className="marquee-label">
+      {/* Notice Marquee - seamless loop: 2 identical groups, track slides -50% */}
+      <div className="notice-bar">
+        <div className="notice-label">
           <i className="fas fa-triangle-exclamation"></i> Notice
         </div>
-        <div className="marquee-track-wrap">
-          <div className="marquee-track">
-            <span>
-              <i className="fas fa-shield-halved"></i>
-              For all payments and customer support, please use only the banking details and contact number
-              provided on our website. Any communication or payment to other numbers will not be the
-              responsibility of BestBuy Auto.
-              &nbsp;&nbsp;&nbsp;
-              <i className="fas fa-car"></i>
-              &nbsp;&nbsp;&nbsp;
-              For all payments and customer support, please use only the banking details and contact number
-              provided on our website. Any communication or payment to other numbers will not be the
-              responsibility of BestBuy Auto.
-              &nbsp;&nbsp;&nbsp;
-              <i className="fas fa-shield-halved"></i>
-              &nbsp;&nbsp;&nbsp;
-            </span>
+        <div className="notice-viewport">
+          <div className="notice-track">
+            {[0, 1].map((g) => (
+              <div className="notice-group" key={g} aria-hidden={g === 1 ? "true" : undefined}>
+                {[0, 1].map((n) => (
+                  <span className="notice-item" key={n}>
+                    <i className="fas fa-shield-halved"></i>
+                    {NOTICE_TEXT}
+                    <i className="fas fa-car"></i>
+                  </span>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>

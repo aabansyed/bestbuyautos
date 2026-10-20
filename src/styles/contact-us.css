@@ -500,3 +500,34 @@ footer{background:var(--dark2);border-top:1px solid var(--glass-border);padding:
   .office-cards{gap:8px;}
   .contact-pill{max-width:100%;}
 }
+/* ── HERO SPACING FIX ── */
+.contact-hero{
+  min-height:640px;
+  align-items:center;
+}
+.hero-bg{
+  height:100%;
+}
+.hero-content{
+  padding:110px 5% 70px;
+}
+
+@media(max-width:768px){
+  .contact-hero{
+    min-height:auto;
+    align-items:center;
+  }
+  .hero-content{
+    padding:70px 16px 50px;
+  }
+  /* text image ke upar hai, isliye overlay poora dark rakha */
+  .hero-bg::after{
+    background:rgba(10,10,10,0.78);
+  }
+}
+
+@media(max-width:400px){
+  .hero-content{
+    padding:60px 16px 40px;
+  }
+}

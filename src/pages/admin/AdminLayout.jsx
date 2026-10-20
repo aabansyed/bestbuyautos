@@ -16,11 +16,13 @@ const NAV_ITEMS = [
   { to: "/admin/blog", icon: "fa-newspaper", label: "Blog Posts" },
   { to: "/admin/how-to-buy", icon: "fa-route", label: "How to Buy" },
   { to: "/admin/privacy-policy", icon: "fa-file-shield", label: "Privacy Policy" },
-  { to: "/admin/queries", icon: "fa-envelope", label: "Queries" },
   { to: "/admin/our-company", icon: "fa-building", label: "Our Company" },
   { to: "/admin/banking", icon: "fa-building-columns", label: "Bank Details" },
-  { to: "/admin/gallery", icon: "fa-images", label: "Photo Gallery" },  
+  { to: "/admin/gallery", icon: "fa-images", label: "Photo Gallery" },
   { to: "/admin/settings", icon: "fa-sliders", label: "Site Settings" },
+  { to: "/admin/queries", icon: "fa-envelope", label: "Queries" },
+  { to: "/admin/email-queries", icon: "fa-envelope-open-text", label: "Email Queries" },
+  { to: "/admin/invoice-requests", icon: "fa-file-invoice", label: "Request Invoice Queries" },
 ];
 
 export default function AdminLayout() {

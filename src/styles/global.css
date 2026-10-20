@@ -1655,3 +1655,15 @@ html, body {
 .sbt-meta span{color:var(--gray);}
 .sbt-footer{align-items:flex-end;}
 .sbt-price-label{font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}
+/* ── NOTICE BAR (seamless marquee, used in Layout on every page) ── */
+.notice-bar{background:#8b1a1a;border-top:1px solid gold;border-bottom:1px solid gold;display:flex;align-items:center;overflow:hidden;height:36px;position:relative;z-index:2;}
+.notice-label{background:gold;color:#111;font-size:11px;font-weight:700;padding:0 14px;height:100%;display:flex;align-items:center;gap:6px;white-space:nowrap;text-transform:uppercase;letter-spacing:.08em;flex-shrink:0;}
+.notice-viewport{flex:1;min-width:0;height:100%;overflow:hidden;display:flex;align-items:center;}
+.notice-track{display:flex;width:max-content;animation:noticeScroll 45s linear infinite;will-change:transform;}
+.notice-group{display:flex;align-items:center;flex-shrink:0;min-width:100vw;justify-content:space-around;}
+.notice-item{display:flex;align-items:center;gap:10px;flex-shrink:0;padding:0 40px;color:#eee;font-size:12.5px;white-space:nowrap;}
+.notice-item i{color:gold;font-size:11px;}
+.notice-bar:hover .notice-track{animation-play-state:paused;}
+@keyframes noticeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (max-width:600px){.notice-track{animation-duration:35s;}.notice-label{padding:0 10px;font-size:10px;}}
+@media (prefers-reduced-motion:reduce){.notice-track{animation:none;}}

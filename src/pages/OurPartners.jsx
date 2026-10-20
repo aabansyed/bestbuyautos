@@ -166,9 +166,16 @@ export default function OurPartners() {
 
 
 
-
 <div className="float-group">
-  <a className="float-btn float-wa" href="https://wa.me/818083434841" target="_blank" rel="noreferrer"><i className="fab fa-whatsapp"></i></a>
+  <a
+    className="float-btn float-wa"
+    href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+    target="_blank"
+    rel="noreferrer"
+  >
+    <span className="float-label">WhatsApp Us</span>
+    <i className="fab fa-whatsapp"></i>
+  </a>
 </div>
     </>
   );

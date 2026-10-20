@@ -1,1 +1,10 @@
 /* page-specific overrides for Home, if any needed beyond global.css */
+.topbar-right { display: flex; align-items: center; gap: 20px; }
+.topbar-right .tb-btn { white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .topbar { flex-wrap: nowrap; gap: 8px; padding-left: 10px; padding-right: 10px; }
+  .topbar-right { gap: 12px; }
+  .topbar-right .tb-btn { font-size: .78rem; }
+  .tb-num { display: none; }   /* mobile par number/email text chhupa do */
+}

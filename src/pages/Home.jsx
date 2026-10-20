@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { initHomePage } from "./scripts/homeScript";
 import "../styles/home.css";
 import HomeDiscoverySections from "../components/HomeDiscoverySections";
@@ -7,8 +7,12 @@ import FeaturedCarsSection from "../components/FeaturedCarsSection";
 import HomeBannerSlider from "../components/HomeBannerSlider";
 import HeroSearch from "../components/HeroSearch";
 import HomeGallerySection from "../components/HomeGallerySection";
-import { useSiteSettings } from "../lib/siteSettings";
+import InvoiceRequestModal from "../components/InvoiceRequestModal";
+import { Link } from "react-router-dom";
+
 export default function Home() {
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
+
   useEffect(() => {
     const cleanup = initHomePage();
     return cleanup;
@@ -31,7 +35,7 @@ export default function Home() {
     <div className="marquee-item"><i className="fas fa-car"></i> Isuzu</div>
     <div className="marquee-item"><i className="fas fa-car"></i> Audi</div>
     <div className="marquee-item"><i className="fas fa-car"></i> Land Rover</div>
-    
+
     <div className="marquee-item"><i className="fas fa-car"></i> Toyota</div>
     <div className="marquee-item"><i className="fas fa-car"></i> Nissan</div>
     <div className="marquee-item"><i className="fas fa-car"></i> Honda</div>
@@ -65,8 +69,7 @@ export default function Home() {
 <section id="shipping">
   <div className="container">
     <div className="section-header" data-aos="fade-up">
-      <div className="section-tag">Export Process</div>
-      <h2 className="section-title">Container <span className="gold">Shipping</span></h2>
+      <h2 className="section-title">Export <span className="gold">Process</span></h2>
       <div className="gold-line"></div>
       <p className="section-desc" style={{marginTop: '16px'}}>From Japan to your country — transparent, reliable, end-to-end</p>
     </div>
@@ -138,28 +141,61 @@ export default function Home() {
       <h2 className="section-title">Secure <span className="gold">Payment Methods</span></h2>
       <div className="gold-line"></div>
     </div>
+
     <div className="payment-grid">
-      <div className="payment-card" data-aos="fade-up" data-aos-delay="0">
+      <Link
+        to="/bank-details"
+        className="payment-card"
+        data-aos="fade-up"
+        data-aos-delay="0"
+        style={{ display: "block", color: "inherit", textDecoration: "none", cursor: "pointer" }}
+      >
         <div className="payment-icon"><i className="fas fa-university"></i></div>
         <div className="payment-name">Bank Transfer (T/T)</div>
         <div className="payment-desc">Direct telegraphic transfer to our Japanese bank account. Fast, secure, and widely accepted for vehicle purchases worldwide.</div>
-        <div style={{marginTop: '16px', fontSize: '.8rem', color: 'var(--gold)'}}><i className="fas fa-check-circle" style={{marginRight: '6px'}}></i>Most Popular Method</div>
-      </div>
-      <div className="payment-card" data-aos="fade-up" data-aos-delay="160">
+        <div style={{ marginTop: "16px", fontSize: ".8rem", color: "var(--gold)" }}>
+          <i className="fas fa-check-circle" style={{ marginRight: "6px" }}></i>Most Popular Method
+        </div>
+      </Link>
+
+      <Link
+        to="/bank-details"
+        className="payment-card"
+        data-aos="fade-up"
+        data-aos-delay="160"
+        style={{ display: "block", color: "inherit", textDecoration: "none", cursor: "pointer" }}
+      >
         <div className="payment-icon"><i className="fas fa-credit-card"></i></div>
         <div className="payment-name">Online Payment</div>
         <div className="payment-desc">Pay securely via credit/debit card or PayPal for deposits and small transactions. Instant confirmation.</div>
-        <div style={{marginTop: '16px', fontSize: '.8rem', color: 'var(--gold)'}}><i className="fas fa-check-circle" style={{marginRight: '6px'}}></i>Quick & Convenient</div>
-      </div>
-      <div className="payment-card" data-aos="fade-up" data-aos-delay="240">
-        <div className="payment-icon"><i className="fas fa-file-contract"></i></div>
+        <div style={{ marginTop: "16px", fontSize: ".8rem", color: "var(--gold)" }}>
+          <i className="fas fa-check-circle" style={{ marginRight: "6px" }}></i>Quick &amp; Convenient
+        </div>
+      </Link>
+
+      <div
+        className="payment-card"
+        data-aos="fade-up"
+        data-aos-delay="320"
+        role="button"
+        tabIndex={0}
+        style={{ cursor: "pointer" }}
+        onClick={() => setInvoiceOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setInvoiceOpen(true); }
+        }}
+      >
+        <div className="payment-icon"><i className="fas fa-file-invoice"></i></div>
         <div className="payment-name">Request Invoice</div>
         <div className="payment-desc">Get a formal proforma invoice with complete vehicle details, FOB price, and payment instructions for your records.</div>
-        <div style={{marginTop: '16px', fontSize: '.8rem', color: 'var(--gold)'}}><i className="fas fa-check-circle" style={{marginRight: '6px'}}></i>Full Documentation</div>
+        <div style={{ marginTop: "16px", fontSize: ".8rem", color: "var(--gold)" }}>
+          <i className="fas fa-check-circle" style={{ marginRight: "6px" }}></i>Full Documentation
+        </div>
       </div>
     </div>
   </div>
 </section>
+
 
 
 <div className="glass-banner" data-aos="zoom-in" style={{marginBottom: '0'}}>
@@ -222,16 +258,16 @@ export default function Home() {
   </div>
 </section>
 <div className="float-group">
-  
-  <a className="float-btn float-wa" href="https://wa.me/8190XXXXXXXX?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details" target="_blank" rel="noreferrer">
-     
+  <a
+    className="float-btn float-wa"
+    href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+    target="_blank"
+    rel="noreferrer"
+  >
     <span className="float-label">WhatsApp Us</span>
     <i className="fab fa-whatsapp"></i>
-    
   </a>
-
 </div>
-
 
 <div className="wetalk-panel" id="wetalkPanel">
   <div className="wetalk-header">
@@ -381,6 +417,9 @@ export default function Home() {
     <i className="fas fa-times"></i>
   </button>
 </div>
+
+{/* Request Invoice form (opens from the Payment Methods section) */}
+<InvoiceRequestModal open={invoiceOpen} onClose={() => setInvoiceOpen(false)} />
     </>
   );
 }

@@ -42,6 +42,7 @@ export const CONTENT_DEFAULTS = {
     "Import regulations by country\nRecommended model year & engine size\nCompliance with local laws\nJapanese auction sheet inspection & translation",
   auction_feature3_outro: "Our specialists help you understand the true condition of the vehicle before you bid.",
   // --- Bank Details page (/bank-details) ---
+  bank_section_title: "Our Suppliers Bank Account",
   bank_company_name: "NEW MOTORS",
   bank_company_address: "Nerima Ku Mianmi Tanaka\n1-13-30 Tokyo Japan.",
   bank_company_phone: "+81 90-5651-8156 (JAPAN) / +81 90-3277-8605 (JAPAN)",
@@ -54,6 +55,21 @@ export const CONTENT_DEFAULTS = {
   bank_account_number: "3028366",
   bank_swift_code: "MHCBJPT",
   bank_note: "BOTH SIDE BANK CHARGES WILL BE PAID BY CUSTOMER SIDE",
+  bank_routing_number: "",
+
+  // Bank 2 (optional) - shown below Bank 1 when filled
+  bank2_company_name: "KHAN JAPAN TRADING",
+  bank2_subtitle: "Alternative payment account - USD via SWIFT (United States)",
+  bank2_name: "Community Federal Savings Bank",
+  bank2_branch_code: "",
+  bank2_address: "89-16 Jamaica Ave, Woodhaven, NY 11421, United States",
+  bank2_account_name: "KHAN JAPAN TRADING",
+  bank2_account_number: "8313273813",
+  bank2_swift_code: "CMFGUS33",
+  bank2_routing_number: "026073150",
+  bank2_note:
+    "Ask your bank to set up a SWIFT transfer - money usually takes 4-5 working days to arrive. ACH transfers are NOT supported.\nUSD payments cannot be sent from: Afghanistan, Belarus, Burundi, Central African Republic, Chad, Crimea, Cuba, DR Congo, Eritrea, Guinea-Bissau, Iran, Iraq, North Korea, Libya, Russia, Serbia, Somalia, South Sudan, Sudan, Syria, Venezuela, Yemen.",
+
   bank_image_url: "",
   bank_video_url: "",
   // ---- How to Buy page ----

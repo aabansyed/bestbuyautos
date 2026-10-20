@@ -48,3 +48,47 @@
   .bd-row-label{flex-basis:100%;}
   .bd-cta{flex-direction:column;align-items:flex-start;}
 }
+/* Bank 2 / multi-bank */
+.bd-note{white-space:pre-line;}
+.bd-bank-heading{margin:0 0 18px;}
+.bd-bank-heading .bd-company-name{margin-bottom:2px;}
+
+/* Section heading + supplier labels */
+.bd-section-head{text-align:center;margin:40px 0 28px;}
+.bd-section-head h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--white);margin:0 0 12px;}
+.bd-section-head .gold-line{margin:0 auto;}
+.bd-supplier-label{margin:36px 0 14px;}
+.bd-supplier-label span{display:inline-block;padding:8px 22px;border-radius:50px;font-weight:800;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;color:var(--black);background:linear-gradient(135deg,var(--gold-dark),var(--gold-light));}
+.bd-supplier-label + .bd-company-card{margin-top:0;}
+/* ── Title + breadcrumb on one line (like Blog page) ── */
+.bd-title-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.bd-title-row h1{
+  margin-bottom:0;
+}
+.bd-title-row .breadcrumb-ol{
+  margin:0 0 10px;
+  padding:0;
+  justify-content:flex-start;
+  font-size:.9rem;
+}
+.bd-title-row .breadcrumb-ol .active{
+  color:#fff;
+}
+
+@media(max-width:700px){
+  .bd-title-row{
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .bd-title-row .breadcrumb-ol{
+    margin-bottom:0;
+    justify-content:center;
+  }
+}

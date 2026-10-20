@@ -7,6 +7,7 @@ import BlogList from "./pages/admin/BlogList";
 import QueriesManager from "./pages/admin/QueriesManager";
 import BlogForm from "./pages/admin/BlogForm";
 import BlogDetail from "./pages/BlogDetail";
+import InvoiceRequests from "./pages/admin/InvoiceRequests";
 import BankDetails from "./pages/BankDetails";
 import BankingDetails from "./pages/admin/BankingDetails";
 import BannerManager from "./pages/admin/BannerManager";
@@ -30,6 +31,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
 import ProtectedRoute from "./pages/admin/ProtectedRoute";
 import CarsList from "./pages/admin/CarsList";
+import EmailQueries from "./pages/admin/EmailQueries"; 
 import CarForm from "./pages/admin/CarForm";
 import Overview from "./pages/admin/Overview";
 import AuctionCarsList from "./pages/admin/AuctionCarsList";
@@ -116,6 +118,8 @@ export default function App() {
               <Route path="gallery" element={<GalleryManager />} />
               <Route path="banking" element={<BankingDetails />} />
               <Route path="settings" element={<SiteSettingsManager />} />
+                 <Route path="invoice-requests" element={<InvoiceRequests />} />
+              <Route path="email-queries" element={<EmailQueries />} />
             </Route>
           </Routes>
         </SiteSettingsProvider>

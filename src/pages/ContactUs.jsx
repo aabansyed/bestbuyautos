@@ -80,8 +80,8 @@ export default function ContactUs() {
       </div>
       <p style={{fontSize: '.72rem', color: 'var(--gray)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px'}}>Follow Us</p>
       <div className="social-strip">
-        <a href="https://www.facebook.com/NO1BESTBUYAUTO/" className="soc-btn" target="_blank" rel="noreferrer"><i className="fab fa-facebook-f"></i> Facebook</a>
-        <a href="https://www.instagram.com/no1bestbuyauto" className="soc-btn" target="_blank" rel="noreferrer"><i className="fab fa-instagram"></i> Instagram</a>
+        <a href="https://www.facebook.com/BBAJAPAN" className="soc-btn" target="_blank" rel="noreferrer"><i className="fab fa-facebook-f"></i> Facebook</a>
+        <a href="https://www.instagram.com/bbajapan.jp" className="soc-btn" target="_blank" rel="noreferrer"><i className="fab fa-instagram"></i> Instagram</a>
         <a href="https://whatsapp.com/channel/0029VbBuIAFDjiOaNllfrx3w" className="soc-btn" target="_blank" rel="noreferrer"><i className="fab fa-whatsapp"></i> WhatsApp Channel</a>
       </div>
     </div>
@@ -227,9 +227,16 @@ export default function ContactUs() {
 </section>
 
 
-
 <div className="float-group">
-  <a className="float-btn float-wa" href="https://whatsapp.com/channel/0029VbBuIAFDjiOaNllfrx3w" target="_blank" rel="noreferrer"><i className="fab fa-whatsapp"></i></a>
+  <a
+    className="float-btn float-wa"
+    href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+    target="_blank"
+    rel="noreferrer"
+  >
+    <span className="float-label">WhatsApp Us</span>
+    <i className="fab fa-whatsapp"></i>
+  </a>
 </div>
     </>
   );

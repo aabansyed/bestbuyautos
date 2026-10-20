@@ -1,14 +1,16 @@
 /* Hero search card (Drive What's Next) */
 .hero-search {
   position: absolute;
-  left: 24px;
+  left: 60px;                 /* image 2 jaisa left gap */
   top: 50%;
   transform: translateY(-50%);
   width: 100%;
   max-width: 395px;
   z-index: 30;
 }
-
+.hero {
+  min-height: 600px;
+}
 .hero-search-title {
   margin: 0 0 14px;
   font-size: 2.2rem;
@@ -96,17 +98,31 @@
 }
 
 .hero-search-btn:hover { background: #c4000f; }
-
 @media (max-width: 768px) {
   .hero-search {
-    left: 12px;
-    right: 12px;
-    max-width: none;
-    width: auto;
+    position: relative;
+    left: auto;
     top: auto;
-    bottom: 16px;
     transform: none;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 24px 16px 32px;      /* card ke upar, neeche aur dono taraf gap */
+    background: var(--dark, #0b0b0f);
+    box-sizing: border-box;
   }
-  .hero-search-title { font-size: 1.5rem; margin-bottom: 8px; }
-  .hero-search-card { padding: 14px 16px 16px; }
+
+  .hero-search-title {
+    font-size: 1.4rem;
+    margin: 0 0 12px;
+    text-align: center;
+  }
+
+  .hero-search-card {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;               /* card beech me */
+    padding: 14px 16px 16px;
+    box-sizing: border-box;
+  }
 }

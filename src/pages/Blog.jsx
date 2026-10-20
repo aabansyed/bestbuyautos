@@ -44,10 +44,17 @@ export default function Blog() {
           <div className="blog-pagination" id="paginationWrap"></div>
         </div>
       </section>
-
-      <a className="float-wa" href="https://wa.me/8190XXXXXXXX?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto" target="_blank" rel="noreferrer" aria-label="WhatsApp">
-        <i className="fab fa-whatsapp"></i>
-      </a>
+<div className="float-group">
+  <a
+    className="float-btn float-wa"
+    href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+    target="_blank"
+    rel="noreferrer"
+  >
+    <span className="float-label">WhatsApp Us</span>
+    <i className="fab fa-whatsapp"></i>
+  </a>
+</div>
     </>
   );
 }

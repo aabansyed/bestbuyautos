@@ -1,7 +1,7 @@
 import { gsap } from "gsap";
 import AOS from "aos";
 import { fetchPublicCars } from "../../lib/carsApi";
-
+import { submitEmailQuery } from "../../lib/emailQueriesApi";
 // Price helper: CurrencyContext ka window.formatPrice use karta hai.
 // data-price-usd attribute ki wajah se CurrencyContext ka MutationObserver
 // currency badalne par is price ko khud update kar deta hai.
@@ -246,47 +246,46 @@ export function initStockCarsPage() {
     window.openModal('payModal');
   }
 
-  function submitPayment() {
-    const v = (id) => (document.getElementById(id)?.value || '').trim();
-    const name = v('payName');
-    const email = v('payEmail');
-    const remarks = v('payRemarks');
+  let submitting = false;
 
-    if (!name || !email || !remarks) {
-      window.showToast('Please fill all required fields', 'info');
-      return;
-    }
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      window.showToast('Please enter a valid email address', 'info');
-      return;
-    }
+async function submitPayment() {
+  if (submitting) return;
+  const v = (id) => (document.getElementById(id)?.value || '').trim();
+  const name = v('payName');
+  const email = v('payEmail');
+  const remarks = v('payRemarks');
 
-    const code = v('payCode');
-    const phoneRaw = v('payPhone').replace(/^0+/, '');
-    const waRaw = v('payWhatsapp').replace(/^0+/, '');
-    const phone = phoneRaw ? `${code} ${phoneRaw}` : '-';
-    const whatsapp = waRaw ? `${code} ${waRaw}` : '-';
-
-    const carTitle = payCar ? `${payCar.year} ${payCar.brand} ${payCar.name}` : '';
-    const carPrice = payCar ? `USD ${payCar.price.toLocaleString()}` : '';
-    const subject = `Total Price Request - ${carTitle} (${payCar ? payCar.stockId : ''})`;
-    const body = [
-      `Vehicle: ${carTitle}`,
-      `Stock Id: ${payCar ? payCar.stockId : ''}`,
-      `Vehicle Price: ${carPrice}`,
-      '',
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Phone: ${phone}`,
-      `WhatsApp: ${whatsapp}`,
-      '',
-      `Remarks: ${remarks}`,
-    ].join('\n');
-
-    window.closeModal('payModal');
-    window.showToast('Opening email to verify your request… 📩', 'success');
-    window.location.href = `mailto:sales@bestbuyauto.jp?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  if (!name || !email || !remarks) {
+    window.showToast('Please fill all required fields', 'info');
+    return;
   }
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    window.showToast('Please enter a valid email address', 'info');
+    return;
+  }
+
+  submitting = true;
+  try {
+    await submitEmailQuery({
+      name,
+      email,
+      phoneCode: v('payCode'),
+      phone: v('payPhone').replace(/^0+/, ''),
+      whatsapp: v('payWhatsapp').replace(/^0+/, ''),
+      remarks,
+      carTitle: payCar ? `${payCar.year} ${payCar.brand} ${payCar.name}` : null,
+      stockId: payCar ? payCar.stockId : null,
+      carPrice: payCar ? payCar.price : null,
+    });
+    window.closeModal('payModal');
+    window.showToast('Thank you! Your request has been sent. We will contact you soon ✅', 'success');
+  } catch (err) {
+    console.error('Email query submit failed:', err);
+    window.showToast('Could not send your request. Please try again.', 'info');
+  } finally {
+    submitting = false;
+  }
+} 
 
   function showGridLoading() {
     const grid = document.getElementById('carsGrid');
@@ -402,4 +401,4 @@ export function initStockCarsPage() {
   return function cleanup() {
     timers.forEach(clearTimeout);
   };
-}
+} 

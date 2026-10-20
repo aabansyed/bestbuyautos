@@ -1,5 +1,4 @@
 import { supabase } from "./supabase";
-
 /** Public site: only in-stock cars, newest first. */
 export async function fetchPublicCars() {
   const { data, error } = await supabase

@@ -183,6 +183,17 @@ export default function StockCars() {
           </div>
         </div>
       </div>
+      <div className="float-group">
+  <a
+    className="float-btn float-wa"
+    href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+    target="_blank"
+    rel="noreferrer"
+  >
+    <span className="float-label">WhatsApp Us</span>
+    <i className="fab fa-whatsapp"></i>
+  </a>
+</div>
 
     </>
   );

@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+
+// Active class sirf tab lagegi jab user usi page par ho
+const navClass = ({ isActive }) => (isActive ? "active" : "");
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -39,16 +42,17 @@ export default function Navbar() {
         <ul className="nav-links">
           {/* About Us with MEGA DROPDOWN */}
           <li className="has-dropdown" id="aboutDropdown">
-            <Link to="/our-company" className="active">
+            <NavLink to="/our-company" className={navClass}>
               About Us <i className="fas fa-chevron-down drop-arrow"></i>
-            </Link>
+            </NavLink>
 
             <div className="mega-dropdown">
               <div className="mega-grid">
-             <Link to="/bank-details" className="mega-item">
-  <div className="mega-icon"><i className="fas fa-university"></i></div>
-  <div className="mega-text">
-    <div className="mega-title">Bank Details</div>
+                <Link to="/bank-details" className="mega-item">
+                  <div className="mega-icon"><i className="fas fa-university"></i></div>
+                  <div className="mega-text">
+                    <div className="mega-title">Bank Details</div>
+                    <div className="mega-desc">Official BBA Japan bank account details for payments.</div>
                   </div>
                 </Link>
 
@@ -77,24 +81,25 @@ export default function Navbar() {
             </div>
           </li>
 
-       <li className="has-dropdown">
-  <Link to="/stock-cars" className="active">
-    <i className="fas fa-chevron-down drop-arrow" style={{ fontSize: 11, marginRight: 4 }}></i> Stock Cars
-  </Link>
-  <div className="nav-dropdown">
-    <Link to="/auction"><i className="fas fa-car"></i> Auction Cars</Link>
-  </div>
-</li>
+          {/* Stock Cars with dropdown */}
+          <li className="has-dropdown">
+            <NavLink to="/stock-cars" className={navClass}>
+              Stock Cars <i className="fas fa-chevron-down drop-arrow"></i>
+            </NavLink>
+            <div className="nav-dropdown">
+              <Link to="/auction"><i className="fas fa-car"></i> Auction Cars</Link>
+            </div>
+          </li>
 
-          <li><Link to="/how-to-buy">How to Buy</Link></li>
-          <li><Link to="/blog">Blogs</Link></li>
+          <li><NavLink to="/how-to-buy" className={navClass}>How to Buy</NavLink></li>
+          <li><NavLink to="/blog" className={navClass}>Blogs</NavLink></li>
           <li><a href="/#testimonials">Reviews</a></li>
 
           {/* Contact with dropdown */}
           <li className="has-dropdown">
-            <Link to="/contact-us">
+            <NavLink to="/contact-us" className={navClass}>
               Contact Us <i className="fas fa-chevron-down drop-arrow"></i>
-            </Link>
+            </NavLink>
             <div className="nav-dropdown">
               <Link to="/contact-us"><i className="fas fa-envelope"></i> Contact Us</Link>
               <div className="drop-divider"></div>
@@ -114,6 +119,7 @@ export default function Navbar() {
       <div className={`mobile-menu ${mobileOpen ? "open" : ""}`} id="mobileMenu">
         <a href="/#hero" onClick={closeMobile}>Home</a>
 
+        {/* About Us */}
         <div
           className={`mob-parent ${openMobSub === "mobAbout" ? "open" : ""}`}
           onClick={() => toggleMobDrop("mobAbout")}
@@ -121,20 +127,28 @@ export default function Navbar() {
           About Us <i className="fas fa-chevron-down mob-arrow"></i>
         </div>
         <div className={`mob-sub ${openMobSub === "mobAbout" ? "open" : ""}`}>
-          <Link to="/contact-us" onClick={closeMobile}><i className="fas fa-university"></i> Banking Details</Link>
+          <Link to="/bank-details" onClick={closeMobile}><i className="fas fa-university"></i> Bank Details</Link>
           <Link to="/ceo-message" onClick={closeMobile}><i className="fas fa-user-tie"></i> CEO Message</Link>
           <Link to="/our-partners" onClick={closeMobile}><i className="fas fa-handshake"></i> Our Partners</Link>
         </div>
 
-      <div className={`mob-sub ${openMobSub === "mobStock" ? "open" : ""}`}>
-  <Link to="/stock-cars" onClick={closeMobile}><i className="fas fa-car"></i> All Stock Cars</Link>
-  <Link to="/auction" onClick={closeMobile}><i className="fas fa-gavel"></i> Auction Cars</Link>
-</div>
+        {/* Stock Cars */}
+        <div
+          className={`mob-parent ${openMobSub === "mobStock" ? "open" : ""}`}
+          onClick={() => toggleMobDrop("mobStock")}
+        >
+          Stock Cars <i className="fas fa-chevron-down mob-arrow"></i>
+        </div>
+        <div className={`mob-sub ${openMobSub === "mobStock" ? "open" : ""}`}>
+          <Link to="/stock-cars" onClick={closeMobile}><i className="fas fa-car"></i> All Stock Cars</Link>
+          <Link to="/auction" onClick={closeMobile}><i className="fas fa-gavel"></i> Auction Cars</Link>
+        </div>
 
         <Link to="/how-to-buy" onClick={closeMobile}>How to Buy</Link>
         <Link to="/blog" onClick={closeMobile}>Blogs</Link>
         <a href="/#testimonials" onClick={closeMobile}>Reviews</a>
 
+        {/* Contact Us */}
         <div
           className={`mob-parent ${openMobSub === "mobContact" ? "open" : ""}`}
           onClick={() => toggleMobDrop("mobContact")}

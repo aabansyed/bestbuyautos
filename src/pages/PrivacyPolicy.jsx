@@ -1,55 +1,125 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchPublicPolicyBlocks, parsePolicyBody, renderInline } from "../lib/policyApi";
-import "../styles/privacypolicy.css";
+import "../styles/privacy-policy.css";
 
 export default function PrivacyPolicy() {
   const [blocks, setBlocks] = useState(null);
+  const [activeId, setActiveId] = useState(null);
 
   useEffect(() => {
     fetchPublicPolicyBlocks().then(setBlocks).catch(() => setBlocks([]));
   }, []);
 
+  // Scroll par sidebar mein current section highlight karo
+  useEffect(() => {
+    if (!blocks || blocks.length === 0) return;
+    const els = blocks
+      .map((b) => document.getElementById(`block-${b.id}`))
+      .filter(Boolean);
+    if (els.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) setActiveId(visible[0].target.id);
+      },
+      { rootMargin: "-120px 0px -60% 0px", threshold: 0 }
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [blocks]);
+
+  const goTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      setActiveId(id);
+    }
+  };
+
   return (
     <>
-      <div className="breadcrumb-section">
-        <div className="breadcrumb-tag">Legal</div>
-        <h1 className="breadcrumb-title">Privacy <span style={{ background: 'linear-gradient(135deg,var(--gold-dark),var(--gold-light))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Policy</span></h1>
-        <nav className="breadcrumb-nav">
-          <Link to="/">Home</Link>
-          <span className="sep"><i className="fas fa-chevron-right"></i></span>
-          <span className="active-crumb">Privacy Policy</span>
-        </nav>
-        <div className="gold-line"></div>
+      {/* ── HERO ── */}
+      <div className="pp-hero">
+        <img className="pp-hero-bg" src="/topside.png" alt="" />
+        <div className="pp-hero-overlay"></div>
+        <div className="pp-hero-line pp-hero-line-top"></div>
+        <div className="pp-hero-line pp-hero-line-bottom"></div>
+
+        <div className="pp-hero-content">
+          <div className="pp-hero-tag">Legal</div>
+          <div className="pp-title-row">
+            <h1 className="pp-hero-title">
+              Privacy <span className="pp-gold">Policy</span>
+            </h1>
+            <div className="pp-crumbs">
+              <Link to="/">Home</Link>
+              <span className="pp-crumb-sep"><i className="fas fa-chevron-right"></i></span>
+              <span className="pp-crumb-active">Privacy Policy</span>
+            </div>
+          </div>
+          <div className="pp-gold-line"></div>
+        </div>
       </div>
 
-      <section className="policy-section">
-        <div className="policy-inner">
+      {/* ── BODY ── */}
+      <section className="pp-section">
+        <div className="pp-inner">
 
-          <aside className="policy-toc" data-aos="fade-right"></aside>
+          {/* Sidebar: table of contents */}
+          <aside className="pp-toc">
+            <div className="pp-toc-title"><i className="fas fa-list-ul"></i> On this page</div>
+            <ul className="pp-toc-list">
+              {blocks && blocks.map((block) => {
+                const id = `block-${block.id}`;
+                return (
+                  <li key={block.id}>
+                    <button
+                      type="button"
+                      className={`pp-toc-link${activeId === id ? " active" : ""}`}
+                      onClick={() => goTo(id)}
+                    >
+                      <i className={`fas ${block.icon}`}></i>
+                      <span>{block.title}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </aside>
 
-          <div className="policy-content">
-
+          {/* Content */}
+          <div className="pp-content">
             {blocks === null && (
-              <div style={{ textAlign: "center", padding: "60px 0", color: "var(--gray)" }}>
-                <i className="fas fa-circle-notch fa-spin" style={{ fontSize: "2rem", color: "var(--gold)" }}></i>
+              <div className="pp-loading">
+                <i className="fas fa-circle-notch fa-spin"></i>
+              </div>
+            )}
+
+            {blocks && blocks.length === 0 && (
+              <div className="pp-empty">
+                <i className="fas fa-file-shield"></i>
+                <p>Policy content is not available right now. Please check back soon.</p>
               </div>
             )}
 
             {blocks && blocks.map((block) => {
               const parsed = parsePolicyBody(block.body);
               return (
-                <div className="policy-block" id={`block-${block.id}`} key={block.id} data-aos="fade-up">
-                  <div className="block-header">
-                    <div className="block-icon"><i className={`fas ${block.icon}`}></i></div>
-                    <h2 className="block-title">{block.title}</h2>
-                  </div>
-                  <div className="policy-text">
+                <article className="pp-block" id={`block-${block.id}`} key={block.id}>
+                  <header className="pp-block-head">
+                    <div className="pp-block-icon"><i className={`fas ${block.icon}`}></i></div>
+                    <h2 className="pp-block-title">{block.title}</h2>
+                  </header>
+                  <div className="pp-text">
                     {parsed.map((item, i) =>
                       item.type === "ul" ? (
                         <ul key={i}>
-                          {item.items.map((li, li_i) => (
-                            <li key={li_i}>{renderInline(li, `${i}-${li_i}`)}</li>
+                          {item.items.map((li, liIdx) => (
+                            <li key={liIdx}>{renderInline(li, `${i}-${liIdx}`)}</li>
                           ))}
                         </ul>
                       ) : (
@@ -57,16 +127,21 @@ export default function PrivacyPolicy() {
                       )
                     )}
                   </div>
-                </div>
+                </article>
               );
             })}
-
           </div>
         </div>
       </section>
 
+      {/* ── WhatsApp float ── */}
       <div className="float-group">
-        <a className="float-btn float-wa" href="https://wa.me/8190XXXXXXXX" target="_blank" rel="noreferrer">
+        <a
+          className="float-btn float-wa"
+          href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+          target="_blank"
+          rel="noreferrer"
+        >
           <span className="float-label">WhatsApp Us</span>
           <i className="fab fa-whatsapp"></i>
         </a>

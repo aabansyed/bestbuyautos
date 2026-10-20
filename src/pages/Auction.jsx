@@ -48,15 +48,17 @@ export default function Auction() {
 
   <div className="bc-content">
     <div className="bc-tag"><span></span> Live Auction Access</div>
-    <h1>Vehicle <span className="gold">Auctions</span></h1>
-    <div className="gold-line"></div>
-    <ol className="breadcrumb-ol">
-      <li><Link to="/">Home</Link></li>
-      <li className="sep">/</li>
-      <li>Services</li>
-      <li className="sep">/</li>
-      <li className="active">Auctions</li>
-    </ol>
+   <div className="auc-title-row">
+  <h1>Vehicle <span className="gold">Auctions</span></h1>
+  <ol className="breadcrumb-ol">
+    <li><Link to="/">Home</Link></li>
+    <li className="sep">/</li>
+    <li>Services</li>
+    <li className="sep">/</li>
+    <li className="active">Auctions</li>
+  </ol>
+</div>
+<div className="gold-line"></div>
   </div>
 
 </div>
@@ -311,11 +313,17 @@ export default function Auction() {
 
 
 
-<a className="float-wa" href="https://wa.me/8190XXXXXXXX?text=Hi%2C%20I'm%20interested%20in%20BBA%20Japan%20auction%20service" target="_blank">
-  <span className="float-wa-tooltip">WhatsApp Us</span>
-  <i className="fab fa-whatsapp"></i>
-</a>
-
+<div className="float-group">
+  <a
+    className="float-btn float-wa"
+    href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+    target="_blank"
+    rel="noreferrer"
+  >
+    <span className="float-label">WhatsApp Us</span>
+    <i className="fab fa-whatsapp"></i>
+  </a>
+</div>
 
 <button id="backTop" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
   <i className="fas fa-chevron-up"></i>

@@ -2,20 +2,38 @@ import { useEffect, useState } from "react";
 import { fetchSiteContent, saveSiteContent } from "../../lib/siteContentApi";
 import { uploadBankingImage } from "../../lib/bankingApi";
 
-const TEXT_FIELDS = [
+// Shared (dono banks ke liye)
+const COMPANY_FIELDS = [
+  { key: "bank_section_title", label: "Page Heading (shown at top, e.g. Our Suppliers Bank Account)", type: "text" },
   { key: "bank_company_name", label: "Company Name", type: "text" },
   { key: "bank_company_address", label: "Company Address (line break = new line)", type: "textarea" },
   { key: "bank_company_phone", label: "Company Phone(s)", type: "text" },
   { key: "bank_intro_text", label: "Intro paragraph (shown above the banking table)", type: "textarea" },
-  { key: "bank_name", label: "Bank Name", type: "text" },
-  { key: "bank_branch_code", label: "Branch Code", type: "text" },
-  { key: "bank_address", label: "Bank Address", type: "text" },
-  { key: "bank_account_name", label: "Account Name", type: "text" },
-  { key: "bank_account_number", label: "Account Number", type: "text" },
-  { key: "bank_swift_code", label: "Swift Code", type: "text" },
-  { key: "bank_note", label: "Note (shown highlighted, e.g. who pays bank charges)", type: "textarea" },
   { key: "bank_video_url", label: "Video URL (optional - YouTube or Vimeo link)", type: "text" },
 ];
+
+// Har bank ke fields. Bank 1 keys: bank_name, bank_branch_code ...
+// Bank 2 keys: bank2_name, bank2_branch_code ...
+const BANK_FIELDS = [
+  { suffix: "name", label: "Bank Name", type: "text" },
+  { suffix: "branch_code", label: "Branch Code (optional)", type: "text" },
+  { suffix: "address", label: "Bank Address", type: "text" },
+  { suffix: "account_name", label: "Account Name", type: "text" },
+  { suffix: "account_number", label: "Account Number", type: "text" },
+  { suffix: "swift_code", label: "Swift Code", type: "text" },
+  { suffix: "routing_number", label: "Routing Number (optional - US banks)", type: "text" },
+  { suffix: "note", label: "Note (shown highlighted, e.g. who pays bank charges)", type: "textarea" },
+];
+
+// Sirf Bank 2: page par New Motors ke neeche iski apni heading banti hai
+const BANK2_EXTRA_FIELDS = [
+  { suffix: "company_name", label: "Bank 2 Company / Heading (e.g. KHAN JAPAN TRADING)", type: "text" },
+  { suffix: "subtitle", label: "Bank 2 Subtitle (optional)", type: "text" },
+];
+
+const ALL_BANK2_FIELDS = [...BANK2_EXTRA_FIELDS, ...BANK_FIELDS];
+
+const bankKey = (prefix, suffix) => `${prefix}_${suffix}`;
 
 export default function BankingDetails() {
   const [values, setValues] = useState(null);
@@ -23,6 +41,7 @@ export default function BankingDetails() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [showSecond, setShowSecond] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -61,6 +80,17 @@ export default function BankingDetails() {
     setSaved(false);
   };
 
+  const removeSecondBank = () => {
+    if (!window.confirm("Bank 2 ki saari details clear ho jayengi. Continue?")) return;
+    setValues((prev) => {
+      const next = { ...prev };
+      ALL_BANK2_FIELDS.forEach((f) => { next[bankKey("bank2", f.suffix)] = ""; });
+      return next;
+    });
+    setShowSecond(false);
+    setSaved(false);
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -78,6 +108,41 @@ export default function BankingDetails() {
   if (!values) {
     return <div className="admin-empty"><i className="fas fa-circle-notch fa-spin"></i> Loading...</div>;
   }
+
+  // Bank 2 card dikhao agar user ne add kiya ho ya pehle se data saved ho
+  const hasSecond =
+    showSecond || ALL_BANK2_FIELDS.some((f) => values[bankKey("bank2", f.suffix)]);
+
+  const renderField = (key, f) => (
+    <div className="form-group" key={key}>
+      <label className="form-label">{f.label}</label>
+      {f.type === "text" && (
+        <input className="form-input" value={values[key] ?? ""} onChange={set(key)} />
+      )}
+      {f.type === "textarea" && (
+        <textarea className="form-input form-textarea" value={values[key] ?? ""} onChange={set(key)} />
+      )}
+    </div>
+  );
+
+  const renderBankCard = (prefix, title, subtitle, fields, onRemove) => (
+    <div className="admin-form" style={{ marginBottom: 24 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+        <div>
+          <div className="admin-panel-title">{title}</div>
+          <p className="admin-panel-sub">{subtitle}</p>
+        </div>
+        {onRemove && (
+          <button type="button" className="admin-btn-danger" onClick={onRemove}>
+            <i className="fas fa-trash"></i> Remove Bank 2
+          </button>
+        )}
+      </div>
+      <div className="admin-form-grid" style={{ gridTemplateColumns: "1fr" }}>
+        {fields.map((f) => renderField(bankKey(prefix, f.suffix), f))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="admin-page">
@@ -123,23 +188,30 @@ export default function BankingDetails() {
         </div>
 
         <div className="admin-form" style={{ marginBottom: 24 }}>
-          <div className="admin-panel-title">Details</div>
-          <p className="admin-panel-sub">Company header, banking table fields, and optional video/intro text.</p>
-
+          <div className="admin-panel-title">Company & Intro</div>
+          <p className="admin-panel-sub">Company header, intro text and optional video (dono banks ke liye common).</p>
           <div className="admin-form-grid" style={{ gridTemplateColumns: "1fr" }}>
-            {TEXT_FIELDS.map((f) => (
-              <div className="form-group" key={f.key}>
-                <label className="form-label">{f.label}</label>
-                {f.type === "text" && (
-                  <input className="form-input" value={values[f.key] ?? ""} onChange={set(f.key)} />
-                )}
-                {f.type === "textarea" && (
-                  <textarea className="form-input form-textarea" value={values[f.key] ?? ""} onChange={set(f.key)} />
-                )}
-              </div>
-            ))}
+            {COMPANY_FIELDS.map((f) => renderField(f.key, f))}
           </div>
         </div>
+
+        {renderBankCard("bank", "Bank 1", "Supplier #1 - primary banking details (New Motors).", BANK_FIELDS)}
+
+        {hasSecond ? (
+          renderBankCard(
+            "bank2",
+            "Bank 2",
+            "Supplier #2 - second bank account (optional), Supplier #1 ke neeche dikhega.",
+            ALL_BANK2_FIELDS,
+            removeSecondBank
+          )
+        ) : (
+          <div style={{ marginBottom: 24 }}>
+            <button type="button" className="admin-btn-primary" onClick={() => setShowSecond(true)}>
+              <i className="fas fa-plus"></i> Add Second Bank
+            </button>
+          </div>
+        )}
 
         <div className="admin-form-actions">
           <button type="submit" className="admin-btn-primary" disabled={saving}>

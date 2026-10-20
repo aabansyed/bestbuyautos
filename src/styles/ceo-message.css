@@ -313,3 +313,49 @@ footer{background:var(--dark2);border-top:1px solid var(--glass-border);padding:
   color: #e8e2d9;
   font-weight: 400;
 }
+/* ── Title + breadcrumb on one line (like Blog page) ── */
+.ceo-title-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+}
+.ceo-title-row .breadcrumb-title{
+  margin-bottom:0;
+}
+.ceo-title-row .breadcrumb-nav{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:8px;
+  margin-bottom:10px;
+  font-size:.9rem;
+  color:var(--gray);
+}
+.ceo-title-row .breadcrumb-nav a{
+  color:var(--gray);
+  text-decoration:none;
+}
+.ceo-title-row .breadcrumb-nav a:hover{
+  color:var(--gold);
+}
+.ceo-title-row .breadcrumb-nav .sep{
+  color:var(--gold);
+  font-size:.65rem;
+}
+.ceo-title-row .breadcrumb-nav .active{
+  color:#fff;
+}
+
+@media(max-width:700px){
+  .ceo-title-row{
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .ceo-title-row .breadcrumb-nav{
+    margin-bottom:0;
+    justify-content:center;
+  }
+}

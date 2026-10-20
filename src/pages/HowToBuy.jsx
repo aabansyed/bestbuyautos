@@ -39,18 +39,20 @@ export default function HowToBuy() {
 
         <div className="bc-content">
           <div className="breadcrumb-tag">{content.htb_hero_tag}</div>
-          <h1 className="breadcrumb-title">
-            {content.htb_hero_title}{" "}
-            <span style={{ background: "linear-gradient(135deg,var(--gold-dark),var(--gold-light))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-              {content.htb_hero_highlight}
-            </span>
-          </h1>
-          <div className="gold-line"></div>
-          <nav className="breadcrumb-nav">
-            <Link to="/">Home</Link>
-            <span className="sep"><i className="fas fa-chevron-right"></i></span>
-            <span className="active-crumb">How to Buy</span>
-          </nav>
+         <div className="htb-title-row">
+  <h1 className="breadcrumb-title">
+    {content.htb_hero_title}{" "}
+    <span style={{ background: "linear-gradient(135deg,var(--gold-dark),var(--gold-light))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+      {content.htb_hero_highlight}
+    </span>
+  </h1>
+  <div className="breadcrumb-nav">
+    <Link to="/">Home</Link>
+    <span className="sep"><i className="fas fa-chevron-right"></i></span>
+    <span className="active-crumb">How to Buy</span>
+  </div>
+</div>
+<div className="gold-line"></div>
         </div>
       </div>
 
@@ -116,12 +118,17 @@ export default function HowToBuy() {
         </div>
       </section>
 
-      <div className="float-group">
-        <a className="float-btn float-wa" href={content.htb_whatsapp_link} target="_blank" rel="noreferrer">
-          <span className="float-label">WhatsApp Us</span>
-          <i className="fab fa-whatsapp"></i>
-        </a>
-      </div>
+     <div className="float-group">
+  <a
+    className="float-btn float-wa"
+    href="https://wa.me/17862160122?text=Hi%2C%20I'm%20interested%20in%20a%20car%20from%20BestBuy%20Auto%2C%20please%20share%20details"
+    target="_blank"
+    rel="noreferrer"
+  >
+    <span className="float-label">WhatsApp Us</span>
+    <i className="fab fa-whatsapp"></i>
+  </a>
+</div>
     </>
   );
 }
