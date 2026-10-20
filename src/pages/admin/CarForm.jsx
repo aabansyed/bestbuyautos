@@ -11,11 +11,21 @@ import {
   FUEL_TYPES,
   TRANS_TYPES,
   BADGE_TYPES,
+  STEERING_TYPES,
+  DRIVE_TYPES,
+  REPAIR_TYPES,
+  MONTHS,
 } from "../../lib/carsApi";
+import { fetchMakes, fetchModels, fetchBodyTypesCatalog, createMake, createModel, createBodyType } from "../../lib/catalogApi";
 const emptyCar = {
-  maker: "",
+  brand: "",
   name: "",
+  model_code: "",
+  stock_id: "",
+  chassis_number: "",
   year: new Date().getFullYear(),
+  reg_month: "",
+  manufacture_year: "",
   price: "",
   mileage: "",
   fuel: "Petrol",
@@ -23,13 +33,66 @@ const emptyCar = {
   body: "SUV",
   color: "",
   engine: "",
+  engine_code: "",
+  displacement_cc: "",
   hp: "",
+  drive: "",
+  steering: "Right",
+  doors: "",
+  seats: "",
+  repair_history: "No Repair History",
+  location: "YOKOHAMA, JAPAN",
   badge: "",
   description: "",
   images: [],
   in_stock: true,
   featured: false,
 };
+
+// Generic "pick existing or add new" field (used for body type).
+function PickOrAdd({ label, value, options, onPick, onAdd, placeholder, blank, disabled }) {
+  const [adding, setAdding] = useState(false);
+  const [text, setText] = useState("");
+  const confirm = () => {
+    const v = text.trim();
+    if (v) onAdd(v);
+    setText("");
+    setAdding(false);
+  };
+  return (
+    <div className="form-group">
+      <label className="form-label">{label}</label>
+      {!adding ? (
+        <select
+          className="form-input"
+          value={value}
+          disabled={disabled}
+          onChange={(e) => (e.target.value === "__add_new__" ? setAdding(true) : onPick(e.target.value))}
+        >
+          {blank && <option value="">{blank}</option>}
+          {options.map((o) => <option key={o} value={o}>{o}</option>)}
+          <option value="__add_new__">+ Add new…</option>
+        </select>
+      ) : (
+        <div style={{ display: "flex", gap: 8 }}>
+          <input
+            className="form-input"
+            autoFocus
+            placeholder={placeholder}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") { e.preventDefault(); confirm(); }
+              if (e.key === "Escape") { setAdding(false); setText(""); }
+            }}
+          />
+          <button type="button" className="admin-btn-secondary" onClick={confirm}><i className="fas fa-check"></i></button>
+          <button type="button" className="admin-btn-secondary" onClick={() => { setAdding(false); setText(""); }}><i className="fas fa-xmark"></i></button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function CarForm() {
   const { id } = useParams();
@@ -42,17 +105,23 @@ export default function CarForm() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [bodyOptions, setBodyOptions] = useState(BODY_TYPES);
-  const [addingBody, setAddingBody] = useState(false);
-  const [newBodyValue, setNewBodyValue] = useState("");
   const [brandOptions, setBrandOptions] = useState([]);
+  const [catalog, setCatalog] = useState({ makes: [], models: [] });
   const [addingBrand, setAddingBrand] = useState(false);
   const [newBrandValue, setNewBrandValue] = useState("");
 
   useEffect(() => {
     (async () => {
       try {
-        const brands = await fetchDistinctBrands();
-        setBrandOptions(brands);
+        const [brands, makes, models, bodies] = await Promise.all([
+          fetchDistinctBrands(),
+          fetchMakes().catch(() => []),
+          fetchModels().catch(() => []),
+          fetchBodyTypesCatalog().catch(() => []),
+        ]);
+        setCatalog({ makes, models });
+        setBrandOptions([...new Set([...makes.map((m) => m.name), ...brands])].sort());
+        if (bodies.length) setBodyOptions(bodies.map((b) => b.name));
       } catch {
         // non-critical — the "+ Add new brand" option still works
       }
@@ -63,6 +132,7 @@ export default function CarForm() {
     const value = newBrandValue.trim();
     if (!value) { setAddingBrand(false); return; }
     setBrandOptions((prev) => (prev.includes(value) ? prev : [...prev, value].sort()));
+    createMake(value).then((m) => setCatalog((c) => ({ ...c, makes: [...c.makes, m] }))).catch(() => {});
     setCar((prev) => ({ ...prev, brand: value }));
     setNewBrandValue("");
     setAddingBrand(false);
@@ -76,21 +146,13 @@ export default function CarForm() {
       try {
         const breakdown = await getBodyTypeBreakdown();
         const extra = breakdown.map((b) => b.body).filter((b) => !BODY_TYPES.includes(b));
-        if (extra.length) setBodyOptions([...BODY_TYPES, ...extra]);
+        if (extra.length) setBodyOptions((prev) => [...new Set([...prev, ...extra])]);
       } catch {
         // non-critical — falls back to the built-in list
       }
     })();
   }, []);
 
-  const confirmNewBody = () => {
-    const value = newBodyValue.trim();
-    if (!value) { setAddingBody(false); return; }
-    setBodyOptions((prev) => (prev.includes(value) ? prev : [...prev, value]));
-    setCar((prev) => ({ ...prev, body: value }));
-    setNewBodyValue("");
-    setAddingBody(false);
-  };
 
   useEffect(() => {
     if (!isEdit) return;
@@ -99,7 +161,7 @@ export default function CarForm() {
       if (fetchError) {
         setError(fetchError.message);
       } else {
-        setCar(data);
+        setCar({ ...emptyCar, ...Object.fromEntries(Object.entries(data).map(([k, v]) => [k, v ?? emptyCar[k] ?? ""])) });
       }
       setLoading(false);
     })();
@@ -148,24 +210,38 @@ export default function CarForm() {
     setError("");
 
     if (!car.brand.trim() || !car.name.trim() || !car.price || !car.year) {
-      setError("Brand, model name, year and price are required.");
+      setError("Make, model name, year and price are required.");
       return;
     }
 
+    const num = (v) => (v === "" || v === null || v === undefined ? null : Number(v));
     const payload = {
       brand: car.brand.trim(),
       name: car.name.trim(),
+      model_code: String(car.model_code).trim(),
+      stock_id: String(car.stock_id).trim(),
+      chassis_number: String(car.chassis_number).trim(),
       year: Number(car.year),
+      reg_month: num(car.reg_month),
+      manufacture_year: num(car.manufacture_year),
       price: Number(car.price),
       mileage: Number(car.mileage) || 0,
       fuel: car.fuel,
       trans: car.trans,
       body: car.body,
-      color: car.color.trim(),
-      engine: car.engine.trim(),
+      color: String(car.color).trim(),
+      engine: String(car.engine).trim(),
+      engine_code: String(car.engine_code).trim(),
+      displacement_cc: num(car.displacement_cc),
       hp: Number(car.hp) || 0,
+      drive: car.drive,
+      steering: car.steering,
+      doors: num(car.doors),
+      seats: num(car.seats),
+      repair_history: car.repair_history,
+      location: String(car.location).trim(),
       badge: car.badge,
-      description: car.description.trim(),
+      description: String(car.description).trim(),
       images: car.images,
       in_stock: car.in_stock,
       featured: car.featured,
@@ -207,16 +283,17 @@ export default function CarForm() {
       {error && <div className="admin-auth-error"><i className="fas fa-circle-exclamation"></i> {error}</div>}
 
       <form className="admin-form" onSubmit={handleSubmit}>
+        <h3 className="admin-form-section">Basic Info</h3>
         <div className="admin-form-grid">
-                  <div className="form-group">
-            <label className="form-label">Brand *</label>
+          <div className="form-group">
+            <label className="form-label">Make *</label>
             {!addingBrand ? (
               <select
                 className="form-input"
                 value={car.brand}
                 onChange={(e) => {
                   if (e.target.value === "__add_new__") { setAddingBrand(true); return; }
-                  set("brand")(e);
+                  setCar((p) => ({ ...p, brand: e.target.value, name: p.brand === e.target.value ? p.name : "" }));
                 }}
               >
                 <option value="">Select brand…</option>
@@ -246,31 +323,139 @@ export default function CarForm() {
             )}
           </div>
 
+          <PickOrAdd
+            label="Model Name *"
+            value={car.name}
+            blank={car.brand ? "Select model…" : "Select make first"}
+            disabled={!car.brand}
+            options={[...new Set([
+              ...catalog.models
+                .filter((m) => catalog.makes.find((k) => k.id === m.make_id)?.name === car.brand)
+                .map((m) => m.name),
+              ...(car.name ? [car.name] : []),
+            ])]}
+            placeholder="e.g. Yaris Hybrid G"
+            onPick={(v) => setCar((p) => ({ ...p, name: v }))}
+            onAdd={async (v) => {
+              setCar((p) => ({ ...p, name: v }));
+              const mk = catalog.makes.find((k) => k.name === car.brand);
+              if (mk) {
+                try { const m = await createModel(mk.id, v); setCatalog((c) => ({ ...c, models: [...c.models, m] })); } catch { /* already exists */ }
+              }
+            }}
+          />
+          <div className="form-group">
+            <label className="form-label">Model Code</label>
+            <input className="form-input" type="text" value={car.model_code} onChange={set("model_code")} placeholder="MXPH10" />
+          </div>
+          <PickOrAdd
+            label="Body Type"
+            value={car.body}
+            options={bodyOptions}
+            placeholder="e.g. Pickup"
+            onPick={(v) => setCar((p) => ({ ...p, body: v }))}
+            onAdd={(v) => { setBodyOptions((p) => (p.includes(v) ? p : [...p, v])); setCar((p) => ({ ...p, body: v })); createBodyType(v).catch(() => {}); }}
+          />
+          <div className="form-group">
+            <label className="form-label">Stock ID</label>
+            <input className="form-input" type="text" value={car.stock_id} onChange={set("stock_id")} placeholder="AU9771" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Chassis Number (VIN)</label>
+            <input className="form-input" type="text" value={car.chassis_number} onChange={set("chassis_number")} placeholder="MXPH10-2012345" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Price (USD) *</label>
+            <input className="form-input" type="number" value={car.price} onChange={set("price")} placeholder="12500" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Mileage (km)</label>
+            <input className="form-input" type="number" value={car.mileage} onChange={set("mileage")} placeholder="62000" />
+          </div>
+        </div>
+
+        <h3 className="admin-form-section">Registration</h3>
+        <div className="admin-form-grid">
+          <div className="form-group">
+            <label className="form-label">Registration Year *</label>
+            <input className="form-input" type="number" value={car.year} onChange={set("year")} placeholder="2021" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Registration Month</label>
+            <select className="form-input" value={car.reg_month} onChange={set("reg_month")}>
+              <option value="">—</option>
+              {MONTHS.map((m, i) => <option key={m} value={i + 1}>{String(i + 1).padStart(2, "0")} - {m}</option>)}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Manufacture Year</label>
+            <input className="form-input" type="number" value={car.manufacture_year} onChange={set("manufacture_year")} placeholder="2021" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Repair History</label>
+            <select className="form-input" value={car.repair_history} onChange={set("repair_history")}>
+              {REPAIR_TYPES.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <h3 className="admin-form-section">Specifications</h3>
+        <div className="admin-form-grid">
           <div className="form-group">
             <label className="form-label">Fuel Type</label>
             <select className="form-input" value={car.fuel} onChange={set("fuel")}>
-              {FUEL_TYPES.map((f) => <option key={f} value={f}>{f}</option>)}
+              {FUEL_TYPES.map((o) => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
           <div className="form-group">
             <label className="form-label">Transmission</label>
             <select className="form-input" value={car.trans} onChange={set("trans")}>
-              {TRANS_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+              {TRANS_TYPES.map((o) => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
-
           <div className="form-group">
-            <label className="form-label">Color</label>
-            <input className="form-input" value={car.color} onChange={set("color")} placeholder="White" />
+            <label className="form-label">Steering</label>
+            <select className="form-input" value={car.steering} onChange={set("steering")}>
+              {STEERING_TYPES.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Drive</label>
+            <select className="form-input" value={car.drive} onChange={set("drive")}>
+              <option value="">—</option>{DRIVE_TYPES.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Displacement (cc)</label>
+            <input className="form-input" type="number" value={car.displacement_cc} onChange={set("displacement_cc")} placeholder="1500" />
           </div>
           <div className="form-group">
             <label className="form-label">Engine</label>
-            <input className="form-input" value={car.engine} onChange={set("engine")} placeholder="4.0L V6" />
+            <input className="form-input" type="text" value={car.engine} onChange={set("engine")} placeholder="1.5L Hybrid" />
           </div>
-
+          <div className="form-group">
+            <label className="form-label">Engine Code</label>
+            <input className="form-input" type="text" value={car.engine_code} onChange={set("engine_code")} placeholder="M15A-FXE" />
+          </div>
           <div className="form-group">
             <label className="form-label">Horsepower</label>
-            <input className="form-input" type="number" value={car.hp} onChange={set("hp")} placeholder="270" />
+            <input className="form-input" type="number" value={car.hp} onChange={set("hp")} placeholder="116" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Doors</label>
+            <input className="form-input" type="number" value={car.doors} onChange={set("doors")} placeholder="5" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Seats</label>
+            <input className="form-input" type="number" value={car.seats} onChange={set("seats")} placeholder="5" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Color</label>
+            <input className="form-input" type="text" value={car.color} onChange={set("color")} placeholder="Gray M" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Inventory Location</label>
+            <input className="form-input" type="text" value={car.location} onChange={set("location")} placeholder="YOKOHAMA, JAPAN" />
           </div>
           <div className="form-group">
             <label className="form-label">Badge</label>

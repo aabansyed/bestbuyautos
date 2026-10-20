@@ -62,6 +62,10 @@ export const BODY_TYPES = ["Sedan", "SUV", "Coupe", "Van", "Hatchback", "Truck",
 export const FUEL_TYPES = ["Petrol", "Diesel", "Hybrid", "Electric"];
 export const TRANS_TYPES = ["Automatic", "Manual", "CVT"];
 export const BADGE_TYPES = ["", "New", "Hot", "Premium"];
+export const STEERING_TYPES = ["Right", "Left"];
+export const DRIVE_TYPES = ["", "2WD", "4WD", "AWD"];
+export const REPAIR_TYPES = ["No Repair History", "Repaired"];
+export const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 /** Distinct brands already in use, for the admin's brand picker. */
 export async function fetchDistinctBrands() {
   const { data, error } = await supabase.from("cars").select("brand");

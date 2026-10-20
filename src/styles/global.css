@@ -1667,3 +1667,30 @@ html, body {
 @keyframes noticeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (max-width:600px){.notice-track{animation-duration:35s;}.notice-label{padding:0 10px;font-size:10px;}}
 @media (prefers-reduced-motion:reduce){.notice-track{animation:none;}}
+/* ── STOCK CARS: detailed filters (Make/Model/Code/Body/Price/Year/Mileage) ── */
+.sf-wrap{display:block !important;}
+.sf-grid{display:grid;gap:14px;margin-bottom:14px;}
+.sf-grid-4{grid-template-columns:repeat(4,1fr);}
+.sf-grid-5{grid-template-columns:repeat(5,1fr);}
+.sf-grid-range{grid-template-columns:1fr 1.8fr 1fr;}
+.sf-field label{display:block;font-size:.72rem;color:var(--gray);margin-bottom:6px;letter-spacing:.5px;}
+.sf-field .filter-select,.sf-field .filter-input{width:100%;}
+.sf-field .filter-select:disabled{opacity:.45;cursor:not-allowed;}
+.sf-pair>div{display:flex;gap:8px;}
+.sf-pair>div .filter-select{min-width:0;flex:1;}
+.sf-actions{display:flex;justify-content:flex-end;gap:12px;align-items:center;margin-top:6px;}
+.sf-reset{background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--gray);padding:12px 20px;border-radius:10px;cursor:pointer;font-size:.85rem;}
+.sf-reset:hover{color:var(--gold);border-color:var(--gold);}
+@media(max-width:900px){
+  .sf-grid-4,.sf-grid-5{grid-template-columns:1fr 1fr;}
+  .sf-grid-range{grid-template-columns:1fr;}
+}
+@media(max-width:520px){.sf-grid-4,.sf-grid-5{grid-template-columns:1fr;}}
+
+/* detail table in car popup */
+.sbt-detail-table{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:6px 18px;margin:16px 0;}
+.sbt-detail-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:.82rem;}
+.sbt-detail-row span{color:var(--gray);}
+.sbt-detail-row b{text-align:right;word-break:break-word;}
+@media(max-width:600px){.sbt-detail-table{grid-template-columns:1fr;}}
+.sbt-meta{grid-template-columns:1fr 1fr;}

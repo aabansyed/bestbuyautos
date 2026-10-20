@@ -29,49 +29,46 @@ export default function StockCars() {
             <p className="section-desc" style={{ marginTop: '16px' }}>Browse thousands of premium vehicles available for worldwide export</p>
           </div>
 
-          <div className="filters-wrap" data-aos="fade-up" data-aos-delay="100">
-            <div className="filters-grid">
-              <input className="filter-input" type="text" placeholder="Search brand or model…" id="fSearch" />
-              <select className="filter-select" id="fBrand">
-                <option value="">All Brands</option>
-                <option>Toyota</option><option>Nissan</option><option>Honda</option>
-                <option>Lexus</option><option>Mitsubishi</option><option>Mazda</option>
-                <option>Subaru</option><option>BMW</option><option>Mercedes</option>
-                <option>Audi</option><option>Land Rover</option><option>Porsche</option>
-              </select>
-              <select className="filter-select" id="fYear">
-                <option value="">Any Year</option>
-                <option value="2023-2026">2023 – 2026</option>
-                <option value="2020-2022">2020 – 2022</option>
-                <option value="2015-2019">2015 – 2019</option>
-                <option value="2010-2014">2010 – 2014</option>
-                <option value="2000-2009">2000 – 2009</option>
-              </select>
-              <select className="filter-select" id="fPrice">
-                <option value="">Any Price</option>
-                <option value="0-5000">Under $5,000</option>
-                <option value="5000-15000">$5,000 – $15,000</option>
-                <option value="15000-30000">$15,000 – $30,000</option>
-                <option value="30000-60000">$30,000 – $60,000</option>
-                <option value="60000+">$60,000+</option>
-              </select>
-              <select className="filter-select" id="fFuel">
-                <option value="">Any Fuel</option>
-                <option>Petrol</option><option>Diesel</option>
-                <option>Hybrid</option><option>Electric</option>
-              </select>
-              <select className="filter-select" id="fTrans">
-                <option value="">Any Transmission</option>
-                <option>Automatic</option><option>Manual</option><option>CVT</option>
-              </select>
-              <select className="filter-select" id="fBody">
-                <option value="">Any Body</option>
-                <option>Sedan</option><option>SUV</option><option>Coupe</option>
-                <option>Hatchback</option><option>Van</option><option>Truck</option>
-              </select>
-              <input className="filter-input" type="number" placeholder="Max Mileage (km)" id="fMileage" />
-              <button className="btn-filter" onClick={() => { window.applyFilters() }}>
-                <i className="fas fa-search"></i> Search Cars
+          <div className="filters-wrap sf-wrap" data-aos="fade-up" data-aos-delay="100">
+            <div className="sf-grid sf-grid-4">
+              <div className="sf-field"><label>Make</label><select className="filter-select" id="fMake"></select></div>
+              <div className="sf-field"><label>Model</label><select className="filter-select" id="fModel" disabled></select></div>
+              <div className="sf-field"><label>Model Code</label><select className="filter-select" id="fModelCode" disabled></select></div>
+              <div className="sf-field"><label>Body Type</label><select className="filter-select" id="fBody"></select></div>
+            </div>
+
+            <div className="sf-grid sf-grid-range">
+              <div className="sf-field sf-pair">
+                <label>Vehicle Price (USD)</label>
+                <div><select className="filter-select" id="fPriceMin"></select><select className="filter-select" id="fPriceMax"></select></div>
+              </div>
+              <div className="sf-field sf-pair sf-pair-wide">
+                <label>Year / Month</label>
+                <div>
+                  <select className="filter-select" id="fYearMin"></select>
+                  <select className="filter-select" id="fMonthMin" disabled></select>
+                  <select className="filter-select" id="fYearMax"></select>
+                  <select className="filter-select" id="fMonthMax" disabled></select>
+                </div>
+              </div>
+              <div className="sf-field sf-pair">
+                <label>Mileage (km)</label>
+                <div><select className="filter-select" id="fMileMin"></select><select className="filter-select" id="fMileMax"></select></div>
+              </div>
+            </div>
+
+            <div className="sf-grid sf-grid-5">
+              <div className="sf-field"><label>Fuel</label><select className="filter-select" id="fFuel"></select></div>
+              <div className="sf-field"><label>Transmission</label><select className="filter-select" id="fTrans"></select></div>
+              <div className="sf-field"><label>Steering</label><select className="filter-select" id="fSteering"></select></div>
+              <div className="sf-field"><label>Drive</label><select className="filter-select" id="fDrive"></select></div>
+              <div className="sf-field"><label>Keyword / Stock ID</label><input className="filter-input" type="text" placeholder="Search…" id="fSearch" /></div>
+            </div>
+
+            <div className="sf-actions">
+              <button className="sf-reset" type="button" onClick={() => { window.resetFilters() }}><i className="fas fa-rotate-left"></i> Reset</button>
+              <button className="btn-filter" type="button" onClick={() => { window.applyFilters() }}>
+                <i className="fas fa-search"></i> Search Cars <span id="sfCount"></span>
               </button>
             </div>
           </div>

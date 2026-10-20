@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { to: "/admin", end: true, icon: "fa-gauge", label: "Overview" },
   { to: "/admin/cars", icon: "fa-car", label: "Cars" },
   { to: "/admin/cars/new", icon: "fa-circle-plus", label: "Add Car" },
+  { to: "/admin/catalog", icon: "fa-tags", label: "Makes, Models & Body Types" },
   { to: "/admin/auction-cars", icon: "fa-gavel", label: "Auction Cars" },
   { to: "/admin/auction-cars/new", icon: "fa-circle-plus", label: "Add Auction Listing" },
   { to: "/admin/company", icon: "fa-file-lines", label: "Company Info" },

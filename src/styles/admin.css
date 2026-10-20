@@ -1592,3 +1592,5 @@
 .gallery-admin-upload-tile i {
   font-size: 1.4rem;
 }
+
+.admin-form-section{font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold, #c9a84c);margin:26px 0 12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08);} 

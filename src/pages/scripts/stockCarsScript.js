@@ -48,6 +48,7 @@ export function initStockCarsPage() {
               <i class="fas ${icon}"></i>
               <div><div class="sbt-spec-val">${dash(value)}</div><div class="sbt-spec-label">${label}</div></div>
             </div>`;
+      const regLabel = car.regMonth ? `${String(car.regMonth).padStart(2,'0')}/${car.year}` : `${car.year}`;
       card.innerHTML = `
         <div class="car-img-wrap" onclick="openCarModal(${car.id})">
           <img src="${car.imgs[0]}" alt="${car.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800'"/>
@@ -60,18 +61,24 @@ export function initStockCarsPage() {
             <span class="sbt-tag sbt-tag-stock">BBA Stock</span>
             ${car.badge ? `<span class="sbt-tag sbt-tag-${car.badge==='Hot'?'hot':'new'}">${car.badge==='New'?'New Arrival':car.badge}</span>` : ''}
           </div>
-          <div class="car-name sbt-title" onclick="openCarModal(${car.id})">${car.year} ${String(car.brand).toUpperCase()} ${car.name}</div>
+          <div class="car-name sbt-title" onclick="openCarModal(${car.id})">${car.year}${car.regMonth ? '/'+String(car.regMonth).padStart(2,'0') : ''} ${String(car.brand).toUpperCase()} ${car.name}</div>
           <div class="sbt-spec-grid">
             ${row('fa-tachometer-alt','Mileage', car.mileage.toLocaleString()+' km')}
-            ${row('fa-gas-pump','Fuel Type', car.fuel)}
+            ${row('fa-hashtag','Model Code', car.modelCode)}
             ${row('fa-cogs','Transmission', car.trans)}
-            ${row('fa-car-side','Body Type', car.body)}
-            ${row('fa-microchip','Engine', car.engine)}
-            ${row('fa-bolt','Power', car.hp ? car.hp+' HP' : '')}
+            ${row('fa-gas-pump','Fuel Type', car.fuel)}
+            ${row('fa-compass-drafting','Drive', car.drive)}
+            ${row('fa-circle-dot','Steering', car.steering)}
+            ${row('fa-microchip','Engine', car.displacement ? car.displacement.toLocaleString()+'cc' : car.engine)}
+            ${row('fa-door-open','Doors', car.doors)}
           </div>
           <div class="sbt-meta">
-            <div><span>Registration:</span> ${car.year}</div>
+            <div><span>Registration:</span> ${regLabel}</div>
+            <div><span>Manufacture:</span> ${dash(car.mfgYear)}</div>
+            <div><span>Body Type:</span> ${dash(car.body)}</div>
             <div><span>Body color:</span> ${dash(car.color)}</div>
+            <div><span>Stock Id:</span> ${dash(car.stockId)}</div>
+            <div><span>Location:</span> ${dash(car.location)}</div>
           </div>
           <div class="car-footer sbt-footer">
             <div>
@@ -93,41 +100,118 @@ export function initStockCarsPage() {
     renderCars();
   }
 
-  function applyFilters() {
-    const search = (document.getElementById('fSearch')?.value || '').trim().toLowerCase();
-    const brand = document.getElementById('fBrand').value;
-    const price = document.getElementById('fPrice').value;
-    const fuel = document.getElementById('fFuel').value;
-    const trans = document.getElementById('fTrans').value;
-    const body = document.getElementById('fBody').value;
-    const maxMiles = parseFloat(document.getElementById('fMileage').value) || Infinity;
-    const year = document.getElementById('fYear')?.value || '';
+  const $ = (id) => document.getElementById(id);
+  const val = (id) => ($(id) ? $(id).value : '');
+  const fillSelect = (id, first, items) => {
+    const el = $(id);
+    if (!el) return;
+    const keep = el.value;
+    el.innerHTML = `<option value="">${first}</option>` +
+      items.map((it) => {
+        const [v, l] = Array.isArray(it) ? it : [it, it];
+        return `<option value="${String(v).replace(/"/g,'&quot;')}">${l}</option>`;
+      }).join('');
+    if ([...el.options].some((o) => o.value === keep)) el.value = keep;
+  };
+  const uniq = (arr) => [...new Set(arr.filter((x) => x !== undefined && x !== null && x !== ''))].sort();
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const PRICE_STEPS = [1000,2000,3000,4000,5000,7500,10000,15000,20000,30000,50000,75000,100000];
+  const MILE_STEPS = [10000,20000,30000,50000,70000,100000,150000,200000,300000];
+
+  // Make -> Model -> Model Code are dependent dropdowns, built from real stock.
+  function refreshModelDropdowns() {
+    const make = val('fMake');
+    const modelSel = $('fModel'); const codeSel = $('fModelCode');
+    if (!modelSel || !codeSel) return;
+    modelSel.disabled = !make;
+    fillSelect('fModel', 'Select a Model', make ? uniq(cars.filter(c => c.brand === make).map(c => c.name)) : []);
+    if (!make) modelSel.value = '';
+    refreshCodeDropdown();
+  }
+  function refreshCodeDropdown() {
+    const make = val('fMake'); const model = val('fModel');
+    const codeSel = $('fModelCode');
+    if (!codeSel) return;
+    codeSel.disabled = !(make && model);
+    fillSelect('fModelCode', 'Select a Model Code',
+      make && model ? uniq(cars.filter(c => c.brand === make && c.name === model).map(c => c.modelCode)) : []);
+    if (!(make && model)) codeSel.value = '';
+  }
+  function refreshMonthDropdowns() {
+    ['Min','Max'].forEach((k) => {
+      const m = $('fMonth'+k);
+      if (!m) return;
+      m.disabled = !val('fYear'+k);
+      if (m.disabled) m.value = '';
+    });
+  }
+
+  function buildFilterOptions() {
+    fillSelect('fMake', 'Select a Make', uniq(cars.map(c => c.brand)));
+    fillSelect('fBody', 'Select a Body Type', uniq(cars.map(c => c.body)));
+    fillSelect('fFuel', 'Any Fuel', uniq(cars.map(c => c.fuel)));
+    fillSelect('fTrans', 'Any Transmission', uniq(cars.map(c => c.trans)));
+    fillSelect('fSteering', 'Any Steering', uniq(cars.map(c => c.steering)));
+    fillSelect('fDrive', 'Any Drive', uniq(cars.map(c => c.drive)));
+    fillSelect('fPriceMin', 'From', PRICE_STEPS.map(n => [n, '$'+n.toLocaleString()]));
+    fillSelect('fPriceMax', 'Up to', PRICE_STEPS.map(n => [n, '$'+n.toLocaleString()]));
+    fillSelect('fMileMin', 'From', MILE_STEPS.map(n => [n, n.toLocaleString()]));
+    fillSelect('fMileMax', 'Up to', MILE_STEPS.map(n => [n, n.toLocaleString()]));
+    const thisYear = new Date().getFullYear();
+    const years = []; for (let y = thisYear; y >= 1990; y--) years.push(y);
+    fillSelect('fYearMin', 'Year', years);
+    fillSelect('fYearMax', 'Year', years);
+    ['fMonthMin','fMonthMax'].forEach((id) => fillSelect(id, 'Month', MONTHS.map((m,i) => [i+1, m])));
+    refreshModelDropdowns();
+    refreshMonthDropdowns();
+    const mk = $('fMake'); if (mk) mk.onchange = refreshModelDropdowns;
+    const md = $('fModel'); if (md) md.onchange = refreshCodeDropdown;
+    ['fYearMin','fYearMax'].forEach((id) => { const e = $(id); if (e) e.onchange = refreshMonthDropdowns; });
+  }
+
+  function applyFilters(silent) {
+    const search = val('fSearch').trim().toLowerCase();
+    const make = val('fMake'), model = val('fModel'), code = val('fModelCode'), body = val('fBody');
+    const fuel = val('fFuel'), trans = val('fTrans'), steering = val('fSteering'), drive = val('fDrive');
+    const num = (id) => (val(id) === '' ? null : Number(val(id)));
+    const pMin = num('fPriceMin'), pMax = num('fPriceMax');
+    const mMin = num('fMileMin'), mMax = num('fMileMax');
+    // year/month -> comparable number (year*12 + month-1); month optional
+    const ym = (y, m, isMax) => (y === null ? null : y*12 + (m !== null ? m-1 : (isMax ? 11 : 0)));
+    const yMin = ym(num('fYearMin'), num('fMonthMin'), false);
+    const yMax = ym(num('fYearMax'), num('fMonthMax'), true);
 
     filteredCars = cars.filter(c => {
-      if(search && !`${c.brand} ${c.name}`.toLowerCase().includes(search)) return false;
-      if(brand && c.brand !== brand) return false;
+      if(search && !`${c.brand} ${c.name} ${c.modelCode} ${c.stockId} ${c.chassis}`.toLowerCase().includes(search)) return false;
+      if(make && c.brand !== make) return false;
+      if(model && c.name !== model) return false;
+      if(code && c.modelCode !== code) return false;
+      if(body && c.body !== body) return false;
       if(fuel && c.fuel !== fuel) return false;
       if(trans && c.trans !== trans) return false;
-      if(body && c.body !== body) return false;
-      if(c.mileage > maxMiles) return false;
-      if(year) {
-        const [lo, hi] = year.split(/[-–]/).map(Number);
-        const maxYear = hi || lo;
-        const cy = Number(c.year);
-        if(cy < lo || cy > maxYear) return false;
-      }
-      if(price) {
-        if(price==='0-5000' && c.price>=5000) return false;
-        if(price==='5000-15000' && (c.price<5000||c.price>=15000)) return false;
-        if(price==='15000-30000' && (c.price<15000||c.price>=30000)) return false;
-        if(price==='30000-60000' && (c.price<30000||c.price>=60000)) return false;
-        if(price==='60000+' && c.price<60000) return false;
-      }
+      if(steering && c.steering !== steering) return false;
+      if(drive && c.drive !== drive) return false;
+      if(pMin !== null && c.price < pMin) return false;
+      if(pMax !== null && c.price > pMax) return false;
+      if(mMin !== null && c.mileage < mMin) return false;
+      if(mMax !== null && c.mileage > mMax) return false;
+      const carYM = Number(c.year)*12 + (c.regMonth ? c.regMonth-1 : 0);
+      if(yMin !== null && carYM < yMin) return false;
+      if(yMax !== null && (Number(c.year)*12 + (c.regMonth ? c.regMonth-1 : 11)) > yMax) return false;
       return true;
     });
     visibleCount = 6;
     renderCars();
-    window.showToast(`Found ${filteredCars.length} vehicle${filteredCars.length!==1?'s':''}`, 'info');
+    const cnt = $('sfCount'); if (cnt) cnt.textContent = `(${filteredCars.length})`;
+    if (silent !== true) window.showToast(`Found ${filteredCars.length} vehicle${filteredCars.length!==1?'s':''}`, 'info');
+  }
+
+  function resetFilters() {
+    ['fMake','fModel','fModelCode','fBody','fFuel','fTrans','fSteering','fDrive','fPriceMin','fPriceMax',
+     'fMileMin','fMileMax','fYearMin','fMonthMin','fYearMax','fMonthMax','fSearch'].forEach((id) => { if ($(id)) $(id).value = ''; });
+    refreshModelDropdowns();
+    refreshMonthDropdowns();
+    applyFilters(true);
   }
 
   function openCarModal(id) {
@@ -141,19 +225,29 @@ export function initStockCarsPage() {
           ${car.imgs.map((img,i)=>`<div class="gallery-thumb"><img src="${img}" onclick="document.getElementById('galleryMain').src='${img}'" alt="View ${i+1}"/></div>`).join('')}
         </div>
       </div>
-      <div class="modal-car-info">
-        <div><div class="info-label">Brand</div><div class="info-value">${car.brand}</div></div>
-        <div><div class="info-label">Year</div><div class="info-value">${car.year}</div></div>
-        <div><div class="info-label">Mileage</div><div class="info-value">${car.mileage.toLocaleString()} km</div></div>
-        <div><div class="info-label">Color</div><div class="info-value">${car.color}</div></div>
-      </div>
-      <div class="modal-specs-grid">
-        <div class="modal-spec"><i class="fas fa-engine"></i><div class="modal-spec-label">Engine</div><div class="modal-spec-value">${car.engine}</div></div>
-        <div class="modal-spec"><i class="fas fa-horse"></i><div class="modal-spec-label">Power</div><div class="modal-spec-value">${car.hp} HP</div></div>
-        <div class="modal-spec"><i class="fas fa-gas-pump"></i><div class="modal-spec-label">Fuel</div><div class="modal-spec-value">${car.fuel}</div></div>
-        <div class="modal-spec"><i class="fas fa-cogs"></i><div class="modal-spec-label">Transmission</div><div class="modal-spec-value">${car.trans}</div></div>
-        <div class="modal-spec"><i class="fas fa-car-side"></i><div class="modal-spec-label">Body</div><div class="modal-spec-value">${car.body}</div></div>
-        <div class="modal-spec"><i class="fas fa-globe"></i><div class="modal-spec-label">Origin</div><div class="modal-spec-value">Japan</div></div>
+      <div class="sbt-detail-table">
+        ${[
+          ['Make / Model', `${car.brand} ${car.name}`],
+          ['Model Code', car.modelCode],
+          ['Registration (Month/Year)', car.regMonth ? `${String(car.regMonth).padStart(2,'0')}.${car.year}` : car.year],
+          ['Manufacture Year', car.mfgYear],
+          ['Color', car.color],
+          ['Mileage', car.mileage.toLocaleString()+' km'],
+          ['Repaired', car.repair],
+          ['Steering', car.steering],
+          ['Transmission', car.trans],
+          ['Fuel', car.fuel],
+          ['Drive', car.drive],
+          ['Doors', car.doors ? car.doors+'D' : ''],
+          ['Seats', car.seats],
+          ['Displacement', car.displacement ? car.displacement.toLocaleString()+'cc' : car.engine],
+          ['Engine Code', car.engineCode],
+          ['Power', car.hp ? car.hp+' HP' : ''],
+          ['Body Type', car.body],
+          ['Chassis No.', car.chassis],
+          ['Stock Id', car.stockId],
+          ['Location', car.location],
+        ].map(([k,v]) => `<div class="sbt-detail-row"><span>${k}</span><b>${v === undefined || v === null || v === '' ? '-' : v}</b></div>`).join('')}
       </div>
       <p style="color:var(--gray);font-size:.9rem;line-height:1.8;margin-bottom:20px">${car.desc}</p>
       <div class="modal-price-row">
@@ -324,53 +418,56 @@ async function submitPayment() {
         hp: row.hp,
         badge: row.badge,
         stockId: row.stock_id || row.id,
+        modelCode: row.model_code || '',
+        chassis: row.chassis_number || '',
+        regMonth: row.reg_month || null,
+        mfgYear: row.manufacture_year || null,
+        repair: row.repair_history || '',
+        steering: row.steering || '',
+        drive: row.drive || '',
+        doors: row.doors || null,
+        seats: row.seats || null,
+        displacement: row.displacement_cc || null,
+        engineCode: row.engine_code || '',
+        location: row.location || '',
         imgs: row.images && row.images.length ? row.images : ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800'],
         desc: row.description,
       }));
 
-      const params = new URLSearchParams(window.location.search);
-      const bodyParam = params.get('body');
-      const qParam = params.get('q');
-      const fuelParam = params.get('fuel');
-      const brandParam = params.get('brand');
-      const priceParam = params.get('price');
-      const yearParam = params.get('year');
-      const mileageParam = params.get('mileage');
-      const setSelect = (id, val) => {
-        const el = document.getElementById(id);
-        if (el && val && [...el.options].some(o => o.value === val)) el.value = val;
-      };
-      setSelect('fBrand', brandParam);
-      setSelect('fPrice', priceParam);
-      setSelect('fYear', yearParam);
-      if (mileageParam) {
-        const mEl = document.getElementById('fMileage');
-        if (mEl) mEl.value = mileageParam;
-      }
-      if (bodyParam) {
-        const bodySelect = document.getElementById('fBody');
-        if (bodySelect && [...bodySelect.options].some(o => o.value === bodyParam)) {
-          bodySelect.value = bodyParam;
-        }
-      }
-      if (fuelParam) {
-        const fuelSelect = document.getElementById('fFuel');
-        if (fuelSelect && [...fuelSelect.options].some(o => o.value === fuelParam)) {
-          fuelSelect.value = fuelParam;
-        }
-      }
-      if (qParam) {
-        const searchInput = document.getElementById('fSearch');
-        if (searchInput) searchInput.value = qParam;
-      }
+      buildFilterOptions();
 
-      if (bodyParam || qParam || fuelParam || brandParam || priceParam || yearParam || mileageParam) {
-        applyFilters();
-      } else {
-        filteredCars = [...cars];
-        visibleCount = 6;
-        renderCars();
-      }
+      const params = new URLSearchParams(window.location.search);
+      const setSel = (id, v) => {
+        const el = $(id);
+        if (el && v && [...el.options].some(o => o.value === v)) { el.value = v; return true; }
+        return false;
+      };
+      let any = false;
+      const use = (id, v) => { if (setSel(id, v)) any = true; };
+      use('fMake', params.get('make') || params.get('brand'));
+      refreshModelDropdowns();
+      use('fModel', params.get('model'));
+      refreshCodeDropdown();
+      use('fModelCode', params.get('modelCode'));
+      use('fBody', params.get('body'));
+      use('fFuel', params.get('fuel'));
+      use('fTrans', params.get('trans'));
+      use('fSteering', params.get('steering'));
+      use('fDrive', params.get('drive'));
+      use('fPriceMin', params.get('priceMin'));
+      use('fPriceMax', params.get('priceMax'));
+      use('fMileMin', params.get('mileageMin'));
+      use('fMileMax', params.get('mileageMax'));
+      use('fYearMin', params.get('yearMin'));
+      use('fYearMax', params.get('yearMax'));
+      refreshMonthDropdowns();
+      use('fMonthMin', params.get('monthMin'));
+      use('fMonthMax', params.get('monthMax'));
+      const q = params.get('q');
+      if (q && $('fSearch')) { $('fSearch').value = q; any = true; }
+
+      if (any) { applyFilters(true); }
+      else { filteredCars = [...cars]; visibleCount = 6; renderCars(); const cnt = $('sfCount'); if (cnt) cnt.textContent = `(${cars.length})`; }
 
       const carId = params.get('carId');
       if (carId && cars.some((c) => String(c.id) === String(carId))) {
@@ -383,7 +480,8 @@ async function submitPayment() {
   }
 
   window.loadMore = loadMore;
-  window.applyFilters = applyFilters;
+  window.applyFilters = () => applyFilters();
+  window.resetFilters = resetFilters;
   window.openCarModal = openCarModal;
   window.toggleWishlist = toggleWishlist;
   window.clearRecent = clearRecent;
@@ -401,4 +499,4 @@ async function submitPayment() {
   return function cleanup() {
     timers.forEach(clearTimeout);
   };
-} 
+}

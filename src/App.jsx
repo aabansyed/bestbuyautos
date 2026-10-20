@@ -33,6 +33,7 @@ import ProtectedRoute from "./pages/admin/ProtectedRoute";
 import CarsList from "./pages/admin/CarsList";
 import EmailQueries from "./pages/admin/EmailQueries"; 
 import CarForm from "./pages/admin/CarForm";
+import CatalogManager from "./pages/admin/CatalogManager";
 import Overview from "./pages/admin/Overview";
 import AuctionCarsList from "./pages/admin/AuctionCarsList";
 import AuctionCarForm from "./pages/admin/AuctionCarForm";
@@ -100,6 +101,7 @@ export default function App() {
               <Route path="cars" element={<CarsList />} />
               <Route path="cars/new" element={<CarForm />} />
               <Route path="cars/:id" element={<CarForm />} />
+              <Route path="catalog" element={<CatalogManager />} />
               <Route path="company" element={<CompanyContent />} />
               <Route path="faqs" element={<FaqManager />} />
               <Route path="banner" element={<BannerManager />} />
